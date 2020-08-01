@@ -72,7 +72,10 @@ ax = f.add_subplot(111)
 ax.axis('off')
 sh = 100
 if mode == 'rect':
-    zoom_float = float_result[cx-sh:cx+sh, cy-sh:cy+sh]
+    if version == 0:
+        zoom_float = float_result[cx-sh:cx+sh, cy-sh:cy+sh]
+    else:
+        zoom_float = float_result[cy-sh:cy+sh, cx-sh:cx+sh]
 if mode == 'otsu':
     if version == 0:
         co = np.load(coord_path)

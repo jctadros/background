@@ -58,7 +58,10 @@ cy = int(np.mean(ycoord))
 sh = 100
 
 if mode == 'rect':
-    cropimage = originalImage[cx-sh:cx+sh+1, cy-sh:cy+sh+1]
+    if version == 0:
+        cropimage = originalImage[cx-sh:cx+sh+1, cy-sh:cy+sh+1]
+    else:
+        cropimage = originalImage[cy-sh:cy+sh+1, cx-sh:cx+sh+1]
 else:
     cropimage = originalImage[cx-sh:cx+sh+1, cy-sh:cy+sh+1]
 
