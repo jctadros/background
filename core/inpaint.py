@@ -172,7 +172,7 @@ if mode == 'otsu':
                     zoom_float[x][y] = np.nan
 
     else:
-        zoom_float = float_result[cx-sh:cx+sh, cy-sh:cy+sh]
+        zoom_float = float_result[cy-sh:cy+sh, cx-sh:cx+sh]
         mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
         for x in range(zoom_float.shape[0]):
             for y in range(zoom_float.shape[1]):
