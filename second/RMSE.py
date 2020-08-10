@@ -26,13 +26,15 @@ if int(version) == 0:
     org_im_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/masked_image.npy'
     inp_im_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/inpainting/inpainted_image.npy'
     coord_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/contour_coord.npy'
-
+    
     org_im = np.load(org_im_path)
     imp_im = np.load(inp_im_path)
     [xcoord, ycoord] = np.load(coord_path)
+
     cx = int(np.mean(xcoord))
     cy = int(np.mean(ycoord))
 
+    sh = 50
     #org_im = org_im[cy-sh:cy+sh, cx-sh:cx+sh]
     #imp_im = imp_im[cy-sh:cy+sh, cx-sh:cx+sh]
     for idx, im in enumerate([org_im, imp_im]):
@@ -41,7 +43,7 @@ if int(version) == 0:
         ax.axis('off')
         c = [cm.coolwarm, cm.seismic, cm.Paired, cm.binary]
         c = c[1]
-        if False:
+        if True:
             mu, std = np.nanmedian(im), np.nanstd(im)
             for x in range(im.shape[0]):
                 for y in range(im.shape[1]):
@@ -51,11 +53,12 @@ if int(version) == 0:
             vminn = np.nanmin(im)
             vmaxx = np.nanmax(im)
 
-        print cy, cx
+        print cx, cy
         plt.imshow(im[cx-sh:cx+sh, cy-sh:cy+sh], vmin=vminn, vmax=vmaxx, cmap=c, interpolation='none')
         cb = plt.colorbar(cmap=c)
         cb.set_label(r"$S_{\nu}$[Jy]")
         plt.show()
+
     exit()
 
 org_im_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/masked_image.npy'
@@ -66,7 +69,6 @@ coord_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analy
 org_im = np.load(org_im_path)
 imp_im = np.load(inp_im_path)
 lin_im = np.load(lin_im_path)
-
 
 [xcoord, ycoord] = np.load(coord_path)
 cx = int(np.mean(xcoord))
