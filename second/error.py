@@ -45,32 +45,14 @@ for x in range(mask.shape[0]):
             if mode == 'rect':
                 err_bil.append((bil[x][y] - org[x][y])**2)
 
-            err_im_inp[x][y] = err_inp[-1]
-            err_im_lin[x][y] = err_lin[-1]
-            if mode == 'rect':
-                err_im_bil[x][y] = err_bil[-1]
         else:
             lin[x][y] = np.nan
             inp[x][y] = np.nan
             if mode == 'rect':
                 bil[x][y] = np.nan
 
-            org[x][y] = np.nan
-            err_im_inp[x][y] = np.nan
-            err_im_lin[x][y] = np.nan
-            if mode == 'rect':
-                err_im_bil[x][y] = np.nan
-
-mean_err_inp, mean_err_lin  = np.nanmean(err_im_inp), np.nanmean(err_im_lin)
-if mode == 'rect':
-    mean_err_bil = np.nanmean(err_im_bil)
-
-rmse_inp, rmse_lin = np.sqrt(mean_err_inp), np.sqrt(mean_err_lin)
-if mode == 'rect':
-    rmse_bil = np.sqrt(mean_err_bil)
-
-print 'rmse_inp = ', mean_err_inp
-print 'rmse_lin = ', mean_err_lin
+print 'rmse_inp = ', np.sqrt(np.nanmean(err_inp))
+print 'rmse_lin = ', np.sqrt(np.nanmean(err_lin))
 
 if mode == 'rect':
-    print 'rmse_bil = ', mean_err_bil
+    print 'rmse_bil = ', np.sqrt(np.nanmean(err_bil))
