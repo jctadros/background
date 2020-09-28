@@ -244,6 +244,7 @@ class inpainter(object):
                         targetPixel = workImage[aY+i][aX+j]
 
                         difference = float(sourcePixel) - float(targetPixel)
+                        #patchError += np.absolute(difference)
                         patchError += math.pow(difference, 2)
                         mean += sourcePixel
 
@@ -258,6 +259,7 @@ class inpainter(object):
                     for (i, j) in self.targetPatchTList:
                                 sourcePixel = workImage[y+i][x+j]
                                 difference = sourcePixel - mean
+                                #patchVariance += np.absolute(difference)
                                 patchVariance += math.pow(difference, 2)
 
                     # Use alpha & Beta to encourage path with less patch variance.
