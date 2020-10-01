@@ -12,6 +12,7 @@ from matplotlib.ticker import MultipleLocator
 
 image_path   = '/Users/jeantad/Desktop/new_crab/DATA_TEST/'
 output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
+
 arg_parser   = argparse.ArgumentParser()
 arg_parser.add_argument("-fn", "--file_name", required=True, help="  file name without extension")
 arg_parser.add_argument("-mode", "--mode", required=True, help=" rectangular or Otsu mode")
@@ -21,8 +22,6 @@ mode = args['mode']
 pass_accept  = True
 
 if mode == 'rect':
-    image_path   = '/Users/jeantad/Desktop/new_crab/DATA_TEST/'
-    output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
     masked_image = np.load(output_path+file_name+'/analysis/ROI_0/masked_image.npy')
     mask = np.load(output_path+file_name+'/analysis/ROI_0/mask.npy')
     new_image = np.copy(masked_image)
@@ -86,14 +85,13 @@ if mode == 'rect':
 
 elif mode == 'otsu':
     try:
-        path   = image_path + file_name + '.fits'                        #create the path of a file
-        info   = fits.open(path)[1].data                                 #load image data
-        header = fits.open(path)[0].header                               #load image header
+        path   = image_path + file_name + '.fits'
+        info   = fits.open(path)[1].data
+        header = fits.open(path)[0].header
         directory_1 = output_path + str(file_name) + '/Otsu'
         directory_2 = output_path + str(file_name) + '/analysis/ROI_0'
-        directory = [directory_1, directory_2]
 
-        for dir in directory:
+        for dir in [directory_1, directory_2]:
             try:
                 if not os.path.exists(dir):
                     os.makedirs(dir)
@@ -116,14 +114,12 @@ elif mode == 'otsu':
             if eclick.xdata > erelease.xdata:
                 eclick.xdata, erelease.xdata = erelease.xdata, eclick.xdata
             x[:] = eclick.xdata, erelease.xdata
-            #y[:] = erelease.ydata, eclick.ydata
             y[:] = erelease.ydata, erelease.ydata - erelease.xdata + eclick.xdata
             ax.set_xlim(min(x), max(x))
             ax.set_ylim(max(y), min(y))
-            #ax.axis('off')
+            ax.axis('off')
             ax.set_yticklabels([])
             ax.set_xticklabels([])
-            #plt.savefig(output_path+str(file_name)+'/Otsu/select.png')
             fig.canvas.mpl_connect("key_press_event", on_key)
 
         while pass_accept:
