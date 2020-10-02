@@ -70,6 +70,7 @@ if mode == 'rect':
         zoom_float = float_result[cx-sh:cx+sh, cy-sh:cy+sh]
     else:
         zoom_float = float_result[cy-sh:cy+sh, cx-sh:cx+sh]
+
 if mode == 'otsu':
     if version == 0:
         co = np.load(coord_path)
@@ -80,18 +81,15 @@ if mode == 'otsu':
         center_y = int(np.mean(yc-ym+float(y[0]+y[1])/2))
 
         zoom_float = float_result[center_x-sh:center_x+sh+1, center_y-sh:center_y+sh+1]
-        mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
-        for x in range(zoom_float.shape[0]):
-            for y in range(zoom_float.shape[1]):
-                if np.absolute(zoom_float[x][y]-mu) >= 5*std:
-                    zoom_float[x][y] = np.nan
+
     else:
         zoom_float = float_result[cy-sh:cy+sh, cx-sh:cx+sh]
-        mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
-        for x in range(zoom_float.shape[0]):
-            for y in range(zoom_float.shape[1]):
-                if np.absolute(zoom_float[x][y]-mu) >= 5*std:
-                    zoom_float[x][y] = np.nan
+
+    mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
+    for x in range(zoom_float.shape[0]):
+        for y in range(zoom_float.shape[1]):
+            if np.absolute(zoom_float[x][y]-mu) >= 3*std:
+                zoom_float[x][y] = np.nan
 
 plt.imshow(zoom_float, cmap=cm.seismic)
 plt.tight_layout()
