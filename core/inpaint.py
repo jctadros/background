@@ -17,7 +17,6 @@ args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 version = args['version']
 mode = args['mode']
-m = args['m']
 
 output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
 directory_1 = output_path + str(file_name) + '/Otsu'
