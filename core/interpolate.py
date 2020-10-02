@@ -8,53 +8,47 @@ arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
 arg_parser.add_argument('-v', '--version', required=True, help=' file name without extension')
 arg_parser.add_argument('-mode', '--mode', required=True, help=' rect or Otsu mode')
-arg_parser.add_argument('-m', '--m', required=False, help=' rect or Otsu mode')
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 version = int(args['version'])
 mode = args['mode']
-m = args['m']
+
+output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
+directory_1 = output_path + str(file_name) + '/Otsu'
+directory_2 = output_path + str(file_name) + '/analysis/ROI_' + str(version)
+directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_' + str(version)
 
 if mode == 'rect':
-    if m == 'sim':
-        image_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/sim/ROI_'+str(version)+'/masked_image.npy'
-        mask_path   = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/sim/ROI_'+str(version)+'/mask.npy'
-        output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/sim/ROI_'+str(version)+'/linear'
-        coord_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/sim/ROI_'+str(version)+'/contour_coord.npy'
-        directory_1 = output_path + '/iterations'
-        directory_2 = output_path + '/updatedMask'
-    else:
-        image_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/masked_image.npy'
-        mask_path   = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/mask.npy'
-        output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/linear'
-        coord_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/contour_coord.npy'
-        directory_1 = output_path + '/iterations'
-        directory_2 = output_path + '/updatedMask'
+    image_path  = directory_3 + '/masked_image.npy'
+    mask_path   = directory_3 + '/mask.npy'
+    output_path = directory_3 + '/linear'
+    coord_path  = directory_3 + '/contour_coord.npy'
+    directory_4 = output_path + '/iterations'
+    directory_5 = output_path + '/updatedMask'
 
 if mode == 'otsu':
-    image_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/masked_image.npy'
-    mask_path   = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/mask.npy'
-    output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/linear'
-    coord_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/contour_coord.npy'
-    directory_1 = output_path + '/iterations'
-    directory_2 = output_path + '/updatedMask'
+    image_path  = directory_2 + '/masked_image.npy'
+    mask_path   = directory_2 +'/mask.npy'
+    output_path = directory_2 +'/linear'
+    coord_path  = directory_2 +'/contour_coord.npy'
+    directory_4 = output_path + '/iterations'
+    directory_5 = output_path + '/updatedMask'
 
-directory = [directory_1, directory_2]
-for dir in directory:
-    try:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-    except OSError:
-        print 'Error: Creating directory ' + dir
+for dir in [directory_4, directory_5]:
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
-originalImage = np.load(image_path)
-mask = np.load(mask_path)
+try:
+    originalImage = np.load(image_path)
+    mask = np.load(mask_path)
+    [xcoord, ycoord] = np.load(coord_path)
+except:
+    print('Error: file not available')
+    exit(1)
 
-[xcoord, ycoord] = np.load(coord_path)
 cx = int(np.mean(xcoord))
 cy = int(np.mean(ycoord))
-
 i = Interpol(originalImage, mask, None)
 i.Linear(file_name, output_path)
 result = i.result
@@ -104,20 +98,3 @@ plt.tight_layout()
 plt.savefig(output_path+'/linear_interpol_image.png')
 plt.close(f)
 np.save(output_path+'/linear_interpol_image.npy', float_result)
-
-if mode == 'rect':
-    if m == 'sim':
-        points_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/sim/ROI_'+str(version)+'/points.npy'
-        points = np.load(points_path)
-        Q_11, Q_12, Q_21, Q_22 = points[0], points[1], points[2], points[3]
-        residual_im = np.zeros((originalImage.shape[0], originalImage.shape[1]))
-        org_im_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/masked_image.npy'
-        org_im = np.load(org_im_path)
-        l_r = []
-        for x in range(Q_11[0], Q_22[0]+1):
-            for y in range(Q_11[1], Q_22[1]+1):
-                l_r.append( (org_im[x][y] - float_result[x][y])**2)
-
-        RMSE = np.sqrt(np.nanmean(l_r))
-        dir = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/sim/ROI_'+str(version)+'/linear'
-        np.save(dir+'/RMSE.npy', [RMSE, (Q_11[0]-Q_22[0]-1) * (Q_11[1]-Q_22[1]-1)])
