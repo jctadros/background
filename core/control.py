@@ -1,24 +1,58 @@
+import mahotas
+import warnings
 import numpy as np
 import skimage.morphology as morph
 import matplotlib.pyplot as plt
-import mahotas
+import matplotlib.widgets as widgets
+from scipy.ndimage.filters import generic_filter
 from UTILS import better_histogram, otsu_method, plateau
-import warnings
+
 warnings.filterwarnings("ignore")
+thres, count, size_morph = 0, 0, 0
 
-thres = 0
-count = 0
-p = False
-size_morph = 0
+def better_histogram(array, p, Thresh, directory_1, nbins=255):
+    val = []
+    for i in array:
+        if np.isnan(i): continue
+        else: val.append(i)
+    val = np.array(val)
+    hist, bin_edges = np.histogram(val, nbins)
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.
+    if p:
+        plt.hist(val, bins=nbins)
+        plt.axvline(x=Thresh, color='red')
+        plt.savefig(directory_1+'/HIST.png')
+        plt.close()
 
-def build_contour(zoom, thres, size_morph, p, file_name, xsize, ysize, data):
+    return hist, bin_centers
+
+def otsu_method(hist, bin_centers, nbins=255):
+    hist = hist.astype(float)
+    weight1 = np.cumsum(hist)
+    weight2 = np.cumsum(hist[::-1])[::-1]
+    mean1 = np.cumsum(hist * bin_centers) / weight1
+    mean2 = (np.cumsum((hist * bin_centers)[::-1]) / weight2[::-1])[::-1]
+    variance12 = weight1[:-1] * weight2[1:] * (mean1[:-1] - mean2[1:]) ** 2
+    idx = np.argmax(variance12)
+    threshold = bin_centers[:-1][idx]
+    return threshold
+
+def plateau(x, y):
+    I_filt = generic_filter(y, np.std, size=5)
+    max = 0
+    for i in range(len(I_filt)):
+        if I_filt[i] > max:
+            max = x[i]
+    return max + 5/2
+
+def build_contour(zoom, thres, size_morph, xsize, ysize):
     global count
     count += 1
     cond = thres
     mask = np.zeros((xsize, ysize), dtype=np.int8)
     for i in range(xsize):
         for j in range(ysize):
-            if zoom[i][j] >= (cond):
+            if zoom[i][j] > cond:
                 mask[i][j] = 1
 
     strel = morph.disk(size_morph)
@@ -26,14 +60,17 @@ def build_contour(zoom, thres, size_morph, p, file_name, xsize, ysize, data):
     Y = np.arange(0, xsize, 1)
     X = np.arange(0, ysize, 1)
     X, Y = np.meshgrid(X, Y)
+
     g = plt.figure()
     CS = plt.contour(X, Y, mask, [0,1,2], cmap='gray')
     plt.close(g)
+
     segs = CS.allsegs
     index = []
     for i in range(len(segs[0])):
         temp = len(segs[0][i])
         index.append(temp)
+
     best = np.argmax(index)
     segs = segs[0][best]
     poly_verts = []
@@ -49,14 +86,10 @@ def build_contour(zoom, thres, size_morph, p, file_name, xsize, ysize, data):
 
     mahotas.polygon.fill_polygon(poly, n_grid)
     pix = np.where(n_grid == 1)
-    flux = 0
-    for m in range(len(pix[0])):
-        if np.isnan(data[(pix[0][m], pix[1][m])]): continue
-        else: flux = flux + data[(pix[0][m], pix[1][m])]
 
-    return segs[:,0], segs[:,1], pix, flux
+    return segs[:,0], segs[:,1], pix
 
-def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, output_path, directory_2):
+def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, directory_1):
     global Thresh, xsize, ysize, data
     def on_key(event):
         global thres, size_morph, p
@@ -71,24 +104,27 @@ def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, output_pa
         elif event.key == 'a':  size_morph += 1
         elif event.key == 'b':  size_morph -= 1
         elif event.key == 'enter':
-            plt.savefig(output_path+str(file_name)+'/Otsu/roi.png')
+            plt.savefig(directory_1+'/roi.png')
             plt.close()
 
-        x_contour, y_contour, pix, ___ = build_contour(zoom, Thresh*(1-thres), size_morph, p, file_name, xsize, ysize, data)
+        x_contour, y_contour, pix = build_contour(zoom, Thresh*(1-thres), size_morph, xsize, ysize)
         image_2.set_data(x_contour, y_contour)
         image_1.set_data(zoom)
         plt.draw()
 
-    xsize, ysize = len(zoom), len(np.transpose(zoom))
-    data  = {}
+    xsize, ysize, data = len(zoom), len(np.transpose(zoom)), {}
     for i in range(xsize):
         for j in range(ysize):
             data[(i,j)] = zoom[i,j]
 
-    hist, bin_centers = better_histogram(data.values(), False, False, None, file_name)
+    hist, bin_centers = better_histogram(data.values(), False, None, directory_1)
     Thresh = otsu_method(hist, bin_centers)
+    x_contour, y_contour, pix = build_contour(zoom, Thresh*(1-thres), size_morph, xsize, ysize)
 
-    x_contour, y_contour, pix, ___ = build_contour(zoom, Thresh*(1-thres), size_morph, False, file_name, xsize, ysize, data)
+    x_contour, y_contour, pix = build_contour(zoom, Thresh*(1-thres), size_morph, xsize, ysize)
+    _, __ = better_histogram(data.values(), True, Thresh*(1-thres), directory_1)
+    del _, __
+
     f = plt.figure()
     ax  = f.add_subplot(111)
     ax.axis('off')
@@ -97,13 +133,8 @@ def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, output_pa
     plt.legend(loc='lower right')
     cb = plt.colorbar()
     cb.set_label(r"$S_{\nu}$[Jy]")
-    h = 0
     f.canvas.mpl_connect("key_press_event", on_key)
     plt.show()
-
-    x_contour, y_contour, pix, ___ = build_contour(zoom, Thresh*(1-thres), size_morph, True, file_name, xsize, ysize, data)
-    _, __ = better_histogram(data.values(), True, False, Thresh*(1-thres), file_name)
-    del _, __, ___
 
     pix_x = pix[0] + col_i
     pix_y = pix[1] + row_i
@@ -116,69 +147,3 @@ def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, output_pa
         mask[pix_x[l]][pix_y[l]]  = 255
 
     return image, mask, x_contour, y_contour
-
-def otsu_thresholding(info, zoom, row_i, col_i, file_name, output_path):
-    thresh, fluxes, contours, grids = [], [], [], []
-    file_name = int(file_name)
-    if file_name==70:  ites=list(np.arange(0,1,0.1)); size_morph  = 12
-    if file_name==100: ites=list(np.arange(0,0.6,0.1)); size_morph = 5
-    if file_name==160: ites=list(np.arange(0,0.6,0.1)); size_morph = 8
-    if file_name==250: ites=list(np.arange(0,0.3,0.1)); size_morph = 0
-    if file_name==350: ites=list(np.arange(0,0.4,0.1)); size_morph = 0
-    if file_name==500: ites=list(np.arange(0,0.6,0.1)); size_morph = 0
-
-    xsize = len(zoom)
-    ysize = len(np.transpose(zoom))
-    data  = {}
-    for i in range(xsize):
-        for j in range(ysize):
-            data[(i,j)] = zoom[i,j]
-
-    hist, bin_centers = better_histogram(data.values(), False, False, None, file_name) #takes into account np.nan values
-    Thresh = otsu_method(hist, bin_centers)
-
-    for k in range(len(ites)):
-        x_contour, y_contour, pix, flux = build_contour(zoom, Thresh*(1-ites[k]), size_morph, p, file_name, xsize, ysize, data)
-        contours.append([x_contour, y_contour])
-        thresh.append(Thresh*(1-ites[k]))
-        fluxes.append(flux)
-        grids.append(pix)
-
-    dfluxes = np.gradient(fluxes)
-    best = plateau(range(len(thresh)), dfluxes)
-
-    try:
-        conts = contours[best]
-        pix   = grids[best]
-
-    except IndexError:
-        safe_factor = 30
-        temp  = len(thresh)
-        best  = plateau(range(temp-safe_factor), dfluxes[0: temp-safe_factor])
-        conts = contours[best]
-        pix = grids[best]
-
-    f = plt.figure()
-    ax  = f.add_subplot(111)
-    ax.axis('off')
-    image_1  = plt.imshow(zoom)
-    image_2, = plt.plot(conts[0], conts[1], 'r', alpha=0.4, label='Region of Interest')
-    plt.legend(loc='lower right')
-    cb = plt.colorbar()
-    cb.set_label(r"$S_{\nu}$[Jy]")
-    plt.savefig(output_path+str(file_name)+'/Otsu/ot_roi.png')
-    plt.close(f)
-
-    _, __ = better_histogram(data.values(), True, True, thresh[best], file_name)
-    del _, __
-    pix_x = pix[0] + col_i
-    pix_y = pix[1] + row_i
-    image  = info.copy()
-    ots_mask = np.zeros((info.shape[0], info.shape[1]))
-    pix_vals = {}
-    for l in range(len(pix_x)):
-        pix_vals[(pix_x[l], pix_y[l])] = image[pix_x[l]][pix_y[l]]
-        image[pix_x[l]][pix_y[l]] = np.nan
-        ots_mask[pix_x[l]][pix_y[l]] = 255
-
-    return image, ots_mask, conts[0], conts[1]
