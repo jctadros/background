@@ -23,10 +23,16 @@ pass_accept  = True
 
 directory_1 = output_path + str(file_name) + '/Otsu'
 directory_2 = output_path + str(file_name) + '/analysis/ROI_0'
+directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_0'
 
 if mode == 'rect':
-    masked_image = np.load(directory_2+'/masked_image.npy')
-    mask = np.load(directory_2+'/mask.npy')
+    try:
+        masked_image = np.load(directory_2+'/masked_image.npy')
+        mask = np.load(directory_2+'/mask.npy')
+    except IOError:
+        print('Error: file not found. -mode otsu first')
+        exit(1)
+
     new_image, new_mask = np.copy(masked_image), np.copy(mask)
 
     xlist, ylist = [], []
@@ -42,7 +48,6 @@ if mode == 'rect':
     new_image[minx:maxx+1, miny:maxy+1] = np.nan
     new_mask[minx:maxx+1, miny:maxy+1]  = 255
 
-    directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_0'
     try:
         if not os.path.exists(directory_3):
             os.makedirs(directory_3)
@@ -166,8 +171,6 @@ elif mode == 'otsu':
     ax.set_xticklabels([])
     plt.imshow(zoom)
     plt.plot(x_contour, y_contour, 'r', alpha=0.5, label='Source Footprint')
-    cb = plt.colorbar()
-    cb.set_label("Flux denisty (Jy)")
     plt.legend(loc='lower right')
     plt.savefig('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/roi.png')
     plt.close('all')
