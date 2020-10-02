@@ -7,12 +7,12 @@ def makeGaussian(size, fwhm):
     x0 = y0 = size//2
     return np.exp(-4*np.log(2)*((x-x0)**2 + (y-y0)**2)/fwhm**2)
 
-def bilinearInterpol(Q_11, Q_12, Q_21, Q_22, originalImage, file_name):
+def bilinearInterpol(Q_11, Q_12, Q_21, Q_22, originalImage, directory_1):
     f_11 = originalImage[Q_11[0], Q_11[1]]
     f_21 = originalImage[Q_21[0], Q_21[1]]
     f_12 = originalImage[Q_12[0], Q_12[1]]
     f_22 = originalImage[Q_22[0], Q_22[1]]
-    #print f_11, f_12, f_21, f_22
+
     v1 = np.ones((4,))
     v2 = [Q_11[0], Q_11[0], Q_21[0], Q_21[0]]
     v3 = [Q_11[1], Q_12[1], Q_11[1], Q_12[1]]
@@ -22,19 +22,15 @@ def bilinearInterpol(Q_11, Q_12, Q_21, Q_22, originalImage, file_name):
 
     recon_im = np.zeros((originalImage.shape[0], originalImage.shape[1]))
     residual_im = np.zeros((originalImage.shape[0], originalImage.shape[1]))
-    org_im_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/masked_image.npy'
+    org_im_path = directory_1 + '/masked_image.npy'
     org_im = np.load(org_im_path)
 
-    l_r = []
     for x in range(Q_11[0], Q_22[0]+1):
         for y in range(Q_11[1], Q_22[1]+1):
             b = np.array(np.dot(np.linalg.inv(array).T, [1, x, y, x*y]))
-            recon_im[x][y]    = np.dot(b, [f_11, f_12, f_21, f_22])
-            l_r.append( (org_im[x][y] - recon_im[x][y])**2)
+            recon_im[x][y] = np.dot(b, [f_11, f_12, f_21, f_22])
 
-    RMSE = np.sqrt(np.nanmean(l_r))
-
-    return recon_im, residual_im, RMSE
+    return recon_im, residual_im
 
 def createMask(Q_11, Q_12, Q_21, Q_22, originalImage):
     mask = np.zeros((originalImage.shape[0], originalImage.shape[1]))
