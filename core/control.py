@@ -121,10 +121,6 @@ def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, directory
     Thresh = otsu_method(hist, bin_centers)
     x_contour, y_contour, pix = build_contour(zoom, Thresh*(1-thres), size_morph, xsize, ysize)
 
-    x_contour, y_contour, pix = build_contour(zoom, Thresh*(1-thres), size_morph, xsize, ysize)
-    _, __ = better_histogram(data.values(), True, Thresh*(1-thres), directory_1)
-    del _, __
-
     f = plt.figure()
     ax  = f.add_subplot(111)
     ax.axis('off')
@@ -135,6 +131,10 @@ def interactive_otsu_thresholding(info, zoom, row_i, col_i, file_name, directory
     cb.set_label(r"$S_{\nu}$[Jy]")
     f.canvas.mpl_connect("key_press_event", on_key)
     plt.show()
+
+    x_contour, y_contour, pix = build_contour(zoom, Thresh*(1-thres), size_morph, xsize, ysize)
+    _, __ = better_histogram(data.values(), True, Thresh*(1-thres), directory_1)
+    del _, __
 
     pix_x = pix[0] + col_i
     pix_y = pix[1] + row_i
