@@ -40,17 +40,17 @@ for x in range(Q_11[0], Q_22[0]+1):
     for y in range(Q_11[1], Q_22[1]+1):
         originalImage[x][y] = recon_im[x][y]
 
+sh = 100
+if version == 0:
+    cropimage = originalImage[cx-sh:cx+sh, cy-sh:cy+sh]
+else:
+    cropimage = originalImage[cy-sh:cy+sh, cx-sh:cx+sh]
+
 mu, std = np.nanmedian(originalImage), np.nanstd(originalImage)
 for x in range(originalImage.shape[0]):
     for y in range(originalImage.shape[1]):
         if np.absolute(originalImage[x][y]-mu) >= 3*std:
             originalImage[x][y] = np.nan
-
-sh = 100
-if version == 0:
-    cropimage = originalImage[cx-sh:cx+sh+1, cy-sh:cy+sh+1]
-else:
-    cropimage = originalImage[cy-sh:cy+sh+1, cx-sh:cx+sh+1]
 
 plt.imshow(originalImage, cmap=cm.seismic)
 plt.axis('off')
