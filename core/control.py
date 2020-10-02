@@ -5,7 +5,6 @@ import skimage.morphology as morph
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
 from scipy.ndimage.filters import generic_filter
-from UTILS import better_histogram, otsu_method, plateau
 
 warnings.filterwarnings("ignore")
 thres, count, size_morph = 0, 0, 0
