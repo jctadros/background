@@ -1,7 +1,7 @@
 import os, sys, argparse, math
 import numpy as np
 import matplotlib.pyplot as plt
-from linear import Interpol
+from linearizer import Interpol
 from matplotlib import ticker, cm
 
 arg_parser  = argparse.ArgumentParser()
