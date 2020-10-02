@@ -141,7 +141,8 @@ ax.axis('off')
 sh = 100
 
 if mode == 'rect':
-    zoom_float = float_result[cx-sh:cx+sh+1, cy-sh:cy+sh+1]
+    if version == 0:
+        zoom_float = float_result[cy-sh:cy+sh+1, cx-sh:cx+sh+1]
 
 if mode == 'otsu':
     if version == 0:
