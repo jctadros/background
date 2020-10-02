@@ -41,7 +41,7 @@ try:
 except TypeError:
     halfPatchWidth  = 4
 
-directory = [out_path + '/inpainting', out_path + '/inpainting/iterations',out_path + '/inpainting/updatedMask', out_path + '/inpainting/positionTrack']
+directory = [out_path+'/inpainting', out_path+'/inpainting/iterations', out_path+'/inpainting/updatedMask', out_path+'/inpainting/positionTrack']
 for dir in directory:
     if not os.path.exists(dir):
         os.makedirs(dir)
@@ -143,7 +143,7 @@ sh = 100
 if mode == 'rect':
     zoom_float = float_result[cx-sh:cx+sh+1, cy-sh:cy+sh+1]
 
-elif mode == 'otsu':
+if mode == 'otsu':
     if version == 0:
         co = np.load(coord_path)
         xc , yc = co[0], co[1]
@@ -164,11 +164,11 @@ elif mode == 'otsu':
         mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
         for x in range(zoom_float.shape[0]):
             for y in range(zoom_float.shape[1]):
-                if np.absolute(zoom_float[x][y]-mu) >= 5*std:
+                if np.absolute(zoom_float[x][y]-mu) >= 3*std:
                     zoom_float[x][y] = np.nan
 
 plt.imshow(zoom_float, cmap=cm.seismic)
-plt.savefig(directory_1+'/inpainted_image.png')
+plt.savefig(out_path+'/inpainting/inpainted_image.png')
 plt.tight_layout()
 plt.close(f)
-np.save(directory_1+'/inpainted_image.npy', float_result)
+np.save(out_path+'/inpainting/inpainted_image.npy', float_result)
