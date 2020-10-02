@@ -121,7 +121,7 @@ elif select == 0:
 
 gray_originalImage = np.uint8(np.round(((2**8 - 1)*(originalImage-np.nanmin(originalImage)))/(np.nanmax(originalImage)-np.nanmin(originalImage))))
 i = inpainter(gray_originalImage, inpaintMask, crop_gray_originalImage, crop_inpaintMask, halfPatchWidth, select)
-i.inpaint(file_name, directory_1, yl, xr)
+i.inpaint(file_name, out_path+'/inpainting', yl, xr)
 
 result = i.result
 float_result = (result*(np.nanmax(originalImage)-np.nanmin(originalImage)))/(2**8 - 1)+np.nanmin(originalImage)
