@@ -60,7 +60,11 @@ except IOError:
     print 'Error: Image data not found'
     exit(1)
 
-select = int(select)
+try:
+    select = int(select)
+except TypeError:
+    pass
+    
 if select == 1:
     def on_key(event):
         global pass_accept
