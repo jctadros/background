@@ -1,49 +1,71 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.ndimage.filters import generic_filter
-import matplotlib.widgets as widgets
 
-def better_histogram(array, p, q, Thresh, file_name, nbins=255):
-    val = []
-    for i in array:
-        if np.isnan(i): continue
-        else: val.append(i)
-    val = np.array(val)
-    hist, bin_edges = np.histogram(val, nbins)
-    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.
-    if p: #For ploting p=True
-        plt.hist(val, bins=nbins)
-        plt.axvline(x=Thresh, color='red')
-        if q:   #For Otsu Thresholding if q=True
-            plt.savefig('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/ots_HIST_'+str(file_name)+'.png')
-        else:   #For Otsu Interactive Thresholding if q=False
-            plt.savefig('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/Otsu/HIST_'+str(file_name)+'.png')
-        plt.close()
-    return hist, bin_centers
+def makeGaussian(size, fwhm):
+    x = np.arange(start=0, stop=size, step=1, dtype=float)
+    y = x[:, np.newaxis]
+    x0 = y0 = size//2
+    return np.exp(-4*np.log(2)*((x-x0)**2 + (y-y0)**2)/fwhm**2)
 
-def otsu_method(hist, bin_centers, nbins=255):
-    hist = hist.astype(float)
-    # class probabilities for all possible thresholds
-    weight1 = np.cumsum(hist)
-    weight2 = np.cumsum(hist[::-1])[::-1]
-    # class means for all possible thresholds
-    mean1 = np.cumsum(hist * bin_centers) / weight1
-    mean2 = (np.cumsum((hist * bin_centers)[::-1]) / weight2[::-1])[::-1]
+def bilinearInterpol(Q_11, Q_12, Q_21, Q_22, originalImage, directory_1):
+    f_11 = originalImage[Q_11[0], Q_11[1]]
+    f_21 = originalImage[Q_21[0], Q_21[1]]
+    f_12 = originalImage[Q_12[0], Q_12[1]]
+    f_22 = originalImage[Q_22[0], Q_22[1]]
 
-    '''
-    Clip ends to align class 1 and class 2 variables:
-    The last value of `weight1`/`mean1` should pair with zero values in
-    `weight2`/`mean2`, which do not exist.
-    '''
-    variance12 = weight1[:-1] * weight2[1:] * (mean1[:-1] - mean2[1:]) ** 2
-    idx = np.argmax(variance12)
-    threshold = bin_centers[:-1][idx]
-    return threshold
+    v1 = np.ones((4,))
+    v2 = [Q_11[0], Q_11[0], Q_21[0], Q_21[0]]
+    v3 = [Q_11[1], Q_12[1], Q_11[1], Q_12[1]]
+    v4 = [Q_11[0]*Q_11[1], Q_11[0]*Q_12[1], Q_21[0]*Q_21[1], Q_21[0]*Q_12[1]]
+    array = np.vstack((v1, v2, v3, v4))
+    array = array.T
 
-def plateau(x, y):
-    I_filt = generic_filter(y, np.std, size=5)
-    max = 0
-    for i in range(len(I_filt)):
-        if I_filt[i] > max:
-            max = x[i]
-    return max + 5/2
+    recon_im = np.zeros((originalImage.shape[0], originalImage.shape[1]))
+    residual_im = np.zeros((originalImage.shape[0], originalImage.shape[1]))
+    org_im_path = directory_1 + '/masked_image.npy'
+    org_im = np.load(org_im_path)
+
+    for x in range(Q_11[0], Q_22[0]+1):
+        for y in range(Q_11[1], Q_22[1]+1):
+            b = np.array(np.dot(np.linalg.inv(array).T, [1, x, y, x*y]))
+            recon_im[x][y] = np.dot(b, [f_11, f_12, f_21, f_22])
+
+    return recon_im, residual_im
+
+def createMask(Q_11, Q_12, Q_21, Q_22, originalImage):
+    mask = np.zeros((originalImage.shape[0], originalImage.shape[1]))
+    masked_image = np.copy(originalImage)
+    for x in range(Q_11[0], Q_22[0]+1):
+        for y in range(Q_11[0], Q_22[0]+1):
+            mask[x,y] = 255
+            masked_image[x,y] = 0
+
+    gray_originalImage = np.uint8(np.round(((2**8 - 1)*(originalImage-np.nanmin(originalImage)))/(np.nanmax(originalImage)-np.nanmin(originalImage))))
+
+    return mask, masked_image, gray_originalImage
+
+def saveroutine(directory_int, directory_inp, recon_im_int, pts, originalImage, id, recon_im_inp):
+    np.save(directory_int+'/recon_im_'+str(id)+'.npy', recon_im_int)
+    plt.imshow(recon_im_int)
+    plt.plot(pts[:,0], pts[:,1], '*')
+    plt.axis('off')
+    plt.savefig(directory_int+'/recon_im_'+str(id)+'.png')
+    plt.close('all')
+
+    plt.imshow(originalImage)
+    plt.plot(pts[:,0], pts[:,1], '*')
+    plt.axis('off')
+    plt.savefig(directory_int+'/originalImage_'+str(id)+'.png')
+    plt.close('all')
+
+    plt.imshow(originalImage)
+    plt.plot(pts[:,0], pts[:,1], '*')
+    plt.axis('off')
+    plt.savefig(directory_inp+'/originalImage_'+str(id)+'.png')
+    plt.close('all')
+
+    plt.imshow(recon_im_inp)
+    plt.plot(pts[:,0], pts[:,1], '*')
+    plt.axis('off')
+    plt.savefig(directory_inp+'/recon_im_'+str(id)+'.png')
+    plt.close('all')
