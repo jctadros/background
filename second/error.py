@@ -13,7 +13,6 @@ file_name = args['file_name']
 version = args['version']
 mode = args['mode']
 
-
 if mode == 'otsu':
     mask = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/mask.npy')
     inp  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/inpainting/inpainted_image.npy')
