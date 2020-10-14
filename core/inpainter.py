@@ -132,8 +132,8 @@ class inpainter(object):
                     self.gradientX[y, x] = 0
                     self.gradientY[y, x] = 0
 
-        self.gradientX /= 2**8-1
-        self.gradientY /= 2**8-1
+        self.gradientX /= 2**16-1
+        self.gradientY /= 2**16-1
 
     def computeFillFront(self):
         boundryMat = cv2.filter2D(self.targetRegion, cv2.CV_32F, self.LAPLACIAN_KERNEL)
@@ -210,8 +210,8 @@ class inpainter(object):
         if pHeight != self.patchHeight or pWidth != self.patchWidth:
             self.patchHeight, self.patchWidth = pHeight, pWidth
             area = pHeight * pWidth
-            SUM_KERNEL = np.ones((pHeight, pWidth), dtype = np.uint8)
-            convolvedMat = cv2.filter2D(self.originalSourceRegion, cv2.CV_8U, SUM_KERNEL, anchor = (0, 0))
+            SUM_KERNEL = np.ones((pHeight, pWidth), dtype = np.uint16)
+            convolvedMat = cv2.filter2D(self.originalSourceRegion, cv2.CV_16U, SUM_KERNEL, anchor = (0, 0))
             self.sourcePatchULList = []
 
             # sourcePatchULList: list whose elements is possible to be the UpperLeft of an patch to reference.
