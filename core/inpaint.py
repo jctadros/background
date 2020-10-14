@@ -64,7 +64,7 @@ try:
     select = int(select)
 except TypeError:
     pass
-    
+
 if select == 1:
     def on_key(event):
         global pass_accept
@@ -116,19 +116,19 @@ if select == 1:
     plt.imshow(crop_inpaintMask, vmin=vmin, vmax=vmax)
     plt.close('all')
     time.sleep(1)
-    crop_gray_originalImage = np.uint8(np.round(((2**8 - 1)*(crop_originalImage-np.nanmin(originalImage)))/(np.nanmax(originalImage)-np.nanmin(originalImage))))
+    crop_gray_originalImage = np.uint16(np.round(((2**16 - 1)*(crop_originalImage-np.nanmin(originalImage)))/(np.nanmax(originalImage)-np.nanmin(originalImage))))
 
 elif select == 0:
     crop_gray_originalImage = None
     crop_inpaintMask = None
     yl, xr = 0, 0
 
-gray_originalImage = np.uint8(np.round(((2**8 - 1)*(originalImage-np.nanmin(originalImage)))/(np.nanmax(originalImage)-np.nanmin(originalImage))))
+gray_originalImage = np.uint16(np.round(((2**16 - 1)*(originalImage-np.nanmin(originalImage)))/(np.nanmax(originalImage)-np.nanmin(originalImage))))
 i = inpainter(gray_originalImage, inpaintMask, crop_gray_originalImage, crop_inpaintMask, halfPatchWidth, select)
 i.inpaint(file_name, out_path+'/inpainting', yl, xr)
 
 result = i.result
-float_result = (result*(np.nanmax(originalImage)-np.nanmin(originalImage)))/(2**8 - 1)+np.nanmin(originalImage)
+float_result = (result*(np.nanmax(originalImage)-np.nanmin(originalImage)))/(2**16 - 1)+np.nanmin(originalImage)
 for x in range(originalImage.shape[0]):
     for y in range(originalImage.shape[1]):
         if math.isnan(originalImage[x, y]):
