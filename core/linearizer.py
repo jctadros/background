@@ -145,7 +145,7 @@ class Interpol(object):
             for idx_y, y in enumerate(range(aY, bY + 1)):
                 for idx_x, x in enumerate(range(aX, bX + 1)):
                     dict[c] = [y, x]
-                    if c!=5:
+                    if c==2 or c==4 or c==6 or c==8 :
                         s.append(self.passImage[y,x])
                     c+=1
 
