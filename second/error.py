@@ -45,24 +45,55 @@ for x in range(mask.shape[0]):
         if mask[x][y] == 255:
             err_inp.append((inp[x][y] - org[x][y])**2)
             err_lin.append((lin[x][y] - org[x][y])**2)
-            err_im_inp[x][y] = err_inp[-1]
-            err_im_lin[x][y] = err_lin[-1]
+            err_im_inp[x][y] = inp[x][y] - org[x][y]
+            err_im_lin[x][y] = lin[x][y] - org[x][y]
 
             org_l.append(org[x][y])
             inp_l.append(inp[x][y])
             lin_l.append(lin[x][y])
             if mode == 'rect':
                 err_bil.append((bil[x][y] - org[x][y])**2)
-    
+
         else:
             lin[x][y] = np.nan
             inp[x][y] = np.nan
             org[x][y] = np.nan
+            err_im_inp[x][y] = np.nan
+            err_im_lin[x][y] = np.nan
             if mode == 'rect':
                 bil[x][y] = np.nan
 
+'''
 print 'rmse_inp = ', np.sqrt(np.nanmean(err_inp))
 print 'rmse_lin = ', np.sqrt(np.nanmean(err_lin))
+'''
+
+def better_histogram(array):
+    val = []
+    for x in range(array.shape[0]):
+        for y in range(array.shape[1]):
+            if np.isnan(array[x][y]): continue
+            else: val.append(array[x][y])
+    val = np.array(val)
+    return plt.hist(val, 255)
+
+org_h, lin_h, inp_h = better_histogram(org), better_histogram(lin), better_histogram(inp)
+
+def _distance(x, y):
+    distance = 0
+    for i in range(len(x)):
+        if x[i] == 0 and y[i] == 0:
+            distance += 0
+        else:
+            distance += ((x[i]-y[i])**2)/(x[i]+y[i])
+    return 0.5*distance/np.var(
+
+print ''
+print 'linear  = ', _distance(org_h[0], lin_h[0])
+print 'inpaint = ', _distance(org_h[0], inp_h[0])
 
 if mode == 'rect':
-    print 'rmse_bil = ', np.sqrt(np.nanmean(err_bil))
+    bil_h = better_histogram(bil)
+    print 'biinter = ', _distance(org_h[0], bil_h[0])
+
+#plt.show()

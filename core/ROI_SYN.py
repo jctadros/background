@@ -19,7 +19,7 @@ if mode == 'rect':
 
 output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
 directory_1 = output_path + str(file_name) + '/Otsu'
-directory_2 = output_path + str(file_name) + '/analysis/ROI_0'
+directory_2 = output_path + str(file_name) + '/analysis/otsu/ROI_0'
 directory_4 = output_path + str(file_name) + '/analysis/rect/ROI_0'
 
 if mode == 'rect':
@@ -38,7 +38,7 @@ elif mode == 'otsu':
     contour_path = directory_1+'/contour_coord.npy'
     masked_image = np.load(masked_path)
     [x_contour, y_contour] = np.load(contour_path)
-    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis'
+    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/otsu'
 
 f, idx = [], [0]
 for (dirpath, dirnames, filenames) in os.walk(directory):
