@@ -9,25 +9,29 @@ from os.path import isfile, join
 arg_parser   = argparse.ArgumentParser()
 arg_parser.add_argument("-fn", "--file_name", required=True, help="  file name without extension")
 arg_parser.add_argument("-mode", "--mode", required=True, help=" rect or Otsu mode")
+arg_parser.add_argument("-size", "--size", required=False, help=" size of rect")
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 mode = args['mode']
+if mode == 'rect':
+    size = args['size']
 
 output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
 directory_1 = output_path + str(file_name) + '/Otsu'
 directory_2 = output_path + str(file_name) + '/analysis/ROI_0'
-directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_0'
+directory_4 = output_path + str(file_name) + '/analysis/rect/ROI_0'
 
 if mode == 'rect':
-    masked_path  = directory_3+'/masked_image.npy'
-    contour_path = directory_3+'/contour_coord.npy'
-    points_path  = directory_3+'/points.npy'
+    directory_3 = output_path + str(file_name) + '/analysis/rect/'+str(size)+'/ROI_0'
+    masked_path  = directory_4+'/masked_image.npy'
+    contour_path = directory_4+'/contour_coord.npy'
+    points_path  = directory_4+'/points.npy'
     points = np.load(points_path)
     Q_11, Q_12, Q_21, Q_22 = points[0], points[1], points[2], points[3]
     [y_contour, x_contour] = np.load(contour_path)
     masked_image = np.load(masked_path)
-    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect'
+    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/'+str(size)
 
 elif mode == 'otsu':
     masked_path  = directory_1+'/masked_image.npy'
