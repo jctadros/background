@@ -28,15 +28,24 @@ if mode == 'rect':
     points = np.load(points_path)
     Q_11, Q_12, Q_21, Q_22 = points[0], points[1], points[2], points[3]
     [y_contour, x_contour] = np.load(contour_path)
+    y_contour, x_contour = list(y_contour), list(x_contour)
+    ymin, ymax = np.min(y_contour), np.max(y_contour)
+    xmin, xmax = np.min(x_contour), np.max(x_contour)
+    s = int(size)
+    for i in range(ymin-int(6.5*s), ymax+int(6.5*s+1), 1):
+        for j in range(xmin-int(6.5*s), xmax+int(6.5*s+1), 1):
+            y_contour.append(i)
+            x_contour.append(j)
+
     masked_image = np.load(masked_path)
-    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/'+str(size)
+    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/' + str(file_name) + '/analysis/rect/' + str(size)
 
 elif mode == 'otsu':
     masked_path  = directory_1+'/masked_image.npy'
     contour_path = directory_1+'/contour_coord.npy'
     masked_image = np.load(masked_path)
     [x_contour, y_contour] = np.load(contour_path)
-    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/otsu'
+    directory = '/Users/jeantad/Desktop/new_crab/OUT_TEST/' + str(file_name) + '/analysis/otsu'
 
 f, idx = [], [0]
 for (dirpath, dirnames, filenames) in os.walk(directory):
@@ -58,6 +67,7 @@ def on_key(event):
             plt.savefig(output_path+'/mask_contour.png')
         plt.close('all')
         count+=1
+
     elif event.key == 'backspace':
         im.set_data(np.copy(image))
         plt.draw()
@@ -95,6 +105,8 @@ for i in range(len(x_contour)):
 mahotas.polygon.fill_polygon(poly, n_grid)
 pix = np.where(n_grid == 1)
 coord = [[],[]]
+print len(pix[0])
+
 for l in range(len(pix[0])):
     image[pix[1][l]][pix[0][l]] = np.nan
     mask[pix[1][l]][pix[0][l]] = 255
