@@ -14,19 +14,17 @@ arg_parser.add_argument("-size", "--size", required=False, help=" size of rect")
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 mode = args['mode']
-if mode == 'rect':
-    size = args['size']
+if mode == 'rect': size = args['size']
 
 output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
-directory_1 = output_path + str(file_name) + '/Otsu'
-directory_2 = output_path + str(file_name) + '/analysis/otsu/ROI_0'
-directory_4 = output_path + str(file_name) + '/analysis/rect/ROI_0'
+directory_1  = output_path + str(file_name) + '/Otsu'
+directory_2  = output_path + str(file_name) + '/analysis/otsu/ROI_0'
+directory_3  = output_path + str(file_name) + '/analysis/rect/ROI_0'
 
 if mode == 'rect':
-    directory_3 = output_path + str(file_name) + '/analysis/rect/'+str(size)+'/ROI_0'
-    masked_path  = directory_4+'/masked_image.npy'
-    contour_path = directory_4+'/contour_coord.npy'
-    points_path  = directory_4+'/points.npy'
+    masked_path  = directory_3+'/masked_image.npy'
+    contour_path = directory_3+'/contour_coord.npy'
+    points_path  = directory_3+'/points.npy'
     points = np.load(points_path)
     Q_11, Q_12, Q_21, Q_22 = points[0], points[1], points[2], points[3]
     [y_contour, x_contour] = np.load(contour_path)
@@ -48,12 +46,10 @@ for (dirpath, dirnames, filenames) in os.walk(directory):
             idx.append(int(folder[-1]))
     break
 idx = np.max(idx)+1
-if mode == 'otsu': output_path  = directory+'/ROI_'+str(idx)+'/'
-elif mode == 'rect': output_path = directory+'/ROI_'+str(idx)+'/'
+output_path  = directory+'/ROI_'+str(idx)+'/'
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
-ok_pass, count = True, 0
 def on_key(event):
     global ok_pass, image, count
     if event.key == 'enter':
@@ -76,6 +72,7 @@ def on_press(event):
     plt.draw()
     fig.canvas.mpl_connect("key_press_event", on_key)
 
+ok_pass, count = True, 0
 while ok_pass:
     xc, yc = np.mean(x_contour), np.mean(y_contour)
     fig = plt.figure()
