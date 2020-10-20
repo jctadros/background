@@ -8,18 +8,22 @@ arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
 arg_parser.add_argument('-v', '--version', required=True, help=' file name without extension')
 arg_parser.add_argument('-mode', '--mode', required=True, help=' rect or Otsu mode')
+arg_parser.add_argument("-size", "--size", required=False, help=" size of rect")
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 version = int(args['version'])
 mode = args['mode']
+if mode == 'rect':
+    size = args['size']
 
 output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
 directory_1 = output_path + str(file_name) + '/Otsu'
 directory_2 = output_path + str(file_name) + '/analysis/ROI_' + str(version)
-directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_' + str(version)
+directory_4 = output_path + str(file_name) + '/analysis/rect/ROI_' + str(version)
 
 if mode == 'rect':
+    directory_3 = output_path + str(file_name) + '/analysis/rect/'+str(size)+'/ROI_'+str(version)
     image_path  = directory_3 + '/masked_image.npy'
     mask_path   = directory_3 + '/mask.npy'
     output_path = directory_3 + '/linear'
