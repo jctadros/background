@@ -19,7 +19,7 @@ if mode == 'rect':
 
 output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
 directory_1 = output_path + str(file_name) + '/Otsu'
-directory_2 = output_path + str(file_name) + '/analysis/ROI_' + str(version)
+directory_2 = output_path + str(file_name) + '/analysis/otsu/ROI_' + str(version)
 directory_4 = output_path + str(file_name) + '/analysis/rect/ROI_' + str(version)
 
 if mode == 'rect':

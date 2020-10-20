@@ -22,7 +22,7 @@ mode = args['mode']
 pass_accept  = True
 
 directory_1 = output_path + str(file_name) + '/Otsu'
-directory_2 = output_path + str(file_name) + '/analysis/ROI_0'
+directory_2 = output_path + str(file_name) + '/analysis/otsu/ROI_0'
 directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_0'
 
 if mode == 'rect':
