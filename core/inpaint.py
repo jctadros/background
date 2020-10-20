@@ -12,18 +12,22 @@ arg_parser.add_argument('-v', '--version', required=True, help=' file name witho
 arg_parser.add_argument('-hpw','--half_patch_width', required=False, help= 'half patch width')
 arg_parser.add_argument('-select', '--select', required=False, help='select source region')
 arg_parser.add_argument('-mode', '--mode', required=True, help=' rect or Otsu mode')
+arg_parser.add_argument('-size', '--size', required=False, help=' rect or Otsu mode')
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 version = args['version']
 mode = args['mode']
 
+if mode == 'rect':
+    size = args['size']
+
 output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
 directory_1 = output_path + str(file_name) + '/Otsu'
 directory_2 = output_path + str(file_name) + '/analysis/ROI_' + str(version)
-directory_3 = output_path + str(file_name) + '/analysis/rect/ROI_' + str(version)
 
 if mode == 'rect':
+    directory_3 = output_path + str(file_name) + '/analysis/rect/'+str(size)+'/ROI_' + str(version)
     out_path = directory_3
     coord_path  = directory_3 + '/contour_coord.npy'
 elif mode == 'otsu':
