@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os, sys, argparse, math
 import astropy.io.fits as fits
+from scipy.spatial.distance import euclidean as euclid
 
 arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
@@ -72,25 +73,17 @@ def better_histogram(array):
             if np.isnan(array[x][y]): continue
             else: val.append(array[x][y])
     val = np.array(val)
-    return plt.hist(val, 255)
+
+    return plt.hist(val, 100)
 
 org_h, lin_h, inp_h = better_histogram(org), better_histogram(lin), better_histogram(inp)
 
 def _distance(x, y):
-    distance = 0
-    for i in range(len(x)):
-        if x[i] == 0 and y[i] == 0:
-            distance += 0
-        else:
-            distance += ((x[i]-y[i])**2)/(x[i]+y[i])
-    return 0.5*distance
+    return euclid(x, y)
 
-print ''
-print 'linear  = ', _distance(org_h[0], lin_h[0])
-print 'inpaint = ', _distance(org_h[0], inp_h[0])
+print 'linear  = ', _distance(org_h[0]/np.sum(org_h[0]), lin_h[0]/np.sum(lin_h[0]))
+print 'inpaint = ', _distance(org_h[0]/np.sum(org_h[0]), inp_h[0]/np.sum(inp_h[0]))
 
 if mode == 'rect':
     bil_h = better_histogram(bil)
-    print 'biinter = ', _distance(org_h[0], bil_h[0])
-
-plt.show()
+    print 'biinter = ', _distance(org_h[0]/np.sum(org_h[0]), bil_h[0]/np.sum(bil_h[0]))
