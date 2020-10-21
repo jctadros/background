@@ -65,11 +65,6 @@ for x in range(mask.shape[0]):
             if mode == 'rect':
                 bil[x][y] = np.nan
 
-'''
-print 'rmse_inp = ', np.sqrt(np.nanmean(err_inp))
-print 'rmse_lin = ', np.sqrt(np.nanmean(err_lin))
-'''
-
 def better_histogram(array):
     val = []
     for x in range(array.shape[0]):
@@ -98,4 +93,4 @@ if mode == 'rect':
     bil_h = better_histogram(bil)
     print 'biinter = ', _distance(org_h[0], bil_h[0])
 
-#plt.show()
+plt.show()
