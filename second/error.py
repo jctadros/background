@@ -7,22 +7,24 @@ arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
 arg_parser.add_argument('-v', '--version', required=True, help=' file name without extension')
 arg_parser.add_argument('-mode', '--mode', required=True, help=' rect or Otsu mode')
+arg_parser.add_argument("-size", "--size", required=False, help=" size of rect")
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 version = args['version']
 mode = args['mode']
+if mode == 'rect': size = args['size']
 
 if mode == 'otsu':
-    mask = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/mask.npy')
-    inp  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/inpainting/inpainted_image.npy')
-    lin  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/ROI_'+str(version)+'/linear/linear_interpol_image.npy')
+    mask = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/otsu/ROI_'+str(version)+'/mask.npy')
+    inp  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/otsu/ROI_'+str(version)+'/inpainting/inpainted_image.npy')
+    lin  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/otsu/ROI_'+str(version)+'/linear/linear_interpol_image.npy')
 
 if mode == 'rect':
-    mask = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/mask.npy')
-    inp  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/inpainting/inpainted_image.npy')
-    lin  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/linear/linear_interpol_image.npy')
-    bil  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/ROI_'+str(version)+'/bilinear/reconstruction.npy')
+    mask = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/'+str(size)+'/ROI_'+str(version)+'/mask.npy')
+    inp  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/'+str(size)+'/ROI_'+str(version)+'/inpainting/inpainted_image.npy')
+    lin  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/'+str(size)+'/ROI_'+str(version)+'/linear/linear_interpol_image.npy')
+    bil  = np.load('/Users/jeantad/Desktop/new_crab/OUT_TEST/'+str(file_name)+'/analysis/rect/'+str(size)+'/ROI_'+str(version)+'/bilinear/reconstruction.npy')
 
 image_path  = '/Users/jeantad/Desktop/new_crab/DATA_TEST/'
 path = image_path + file_name + '.fits'
@@ -86,7 +88,7 @@ def _distance(x, y):
             distance += 0
         else:
             distance += ((x[i]-y[i])**2)/(x[i]+y[i])
-    return 0.5*distance/np.var(
+    return 0.5*distance
 
 print ''
 print 'linear  = ', _distance(org_h[0], lin_h[0])
