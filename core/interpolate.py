@@ -57,7 +57,7 @@ i = Interpol(originalImage, mask, None)
 i.Linear(file_name, output_path)
 result = i.result
 
-float_result = (result*(np.nanmax(originalImage)-np.nanmin(originalImage)))/(2**8 - 1)+np.nanmin(originalImage)
+float_result = (result*(np.nanmax(originalImage)-np.nanmin(originalImage)))/(2**16 - 1)+np.nanmin(originalImage)
 mean, std = np.nanmean(float_result), np.nanstd(float_result)
 for x in range(originalImage.shape[0]):
     for y in range(originalImage.shape[1]):
