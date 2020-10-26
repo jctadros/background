@@ -78,6 +78,8 @@ def better_histogram(array):
 
 org_h, lin_h, inp_h = better_histogram(org), better_histogram(lin), better_histogram(inp)
 
+plt.show()
+
 def _distance(x, y):
     return euclid(x, y)
 
