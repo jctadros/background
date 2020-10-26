@@ -14,4 +14,4 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
   `python ROI_GEN.py -fn [file name] -mode [mode]`
 
-  `ROI_GEN.py` will create different directories and store the original image, ROI, mask, and masked image as well as .npy files of them for future use. 
+  `ROI_GEN.py` will create different directories and store the original image, ROI, mask, and masked image as well as .npy versions for future use. 
