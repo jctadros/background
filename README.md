@@ -2,6 +2,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
 ![Comparision](/images/out.jpg)
 <img align='right' src="images/ROI_GEN.gif" width="276" height="276">
+<img align='right' src="images/ROI_GEN_2.gif" width="276" height="276">
 
 ##### Usage
 1. `ROI_GEN.py` is an interactive background thresholder used to identify the region of interest (ROI) in the image. This ROI will be masked for background interpolation. Two modes are available through the `-mode` argument:
@@ -13,5 +14,3 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
   `python ROI_GEN.py -fn [file name] -mode [mode]`
 
   `ROI_GEN.py` will create different directories and store the original image, ROI, mask, and masked image as well as .npy files of them for future use. 
-<img align='right' src='images/ROI_GEN_2.gif' width='276' height='276'>
-
