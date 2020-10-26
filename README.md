@@ -11,5 +11,4 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 N.B: run with otsu mode before rect mode as the rectangular mask will be centered around the Otsu-generated ROI.
 
 `python ROI_GEN.py -fn [file name] -mode [mode]`
-
 <img align='right' src='images/ROI_GEN_2.gif' width='276' height='276'>
