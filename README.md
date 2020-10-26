@@ -14,4 +14,4 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
   `python ROI_GEN.py -fn [file name] -mode [mode]`
 
-  `ROI_GEN.py` will create different directories and store the original image, ROI, mask, and masked image as well as .npy versions for future use. 
+  `ROI_GEN.py` will create different directories and store the original image, ROI, mask, and masked image as well as .npy versions for future use. The thresholding can be interactively manipulated through the `left-right` and `up-down` arrows to increment/decrement the ROI with small (large) steps as well as both `A` and `B` keys for smoothing out and desmoothing of the ROI. For more information about the Otsu thresholding mechanism checkout..
