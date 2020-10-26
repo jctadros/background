@@ -3,8 +3,8 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 ![Comparision](/images/out.jpg)
 <img align="right" src="images/ROI_GEN.gif" width="276" height="276">
 ##### Usage
-`ROI_GEN.py` is an interactive background thresholder used to identify the region of interest (ROI) in the image. This ROI will be masked for background removal or any other manipulation. Two modes are available through the `-mode` parser:
+`ROI_GEN.py` is an interactive background thresholder used to identify the region of interest (ROI) in the image. This ROI will be masked for background interpolation. Two modes are available through the `-mode` parser:
   - `-mode otsu` for an interactive Otsu thresholder.
   - `-mode rect` for a rectangular ROI.
-
-`python ROI_GEN.py -fn [file name] -mode [mode choice]`
+N.B: run with otsu mode before rect mode as the rectangular mask will be centered around the Otsu-generated ROI.
+`python ROI_GEN.py -fn [file name] -mode [mode]`
