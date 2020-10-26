@@ -7,6 +7,4 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
   - `-mode otsu` for an interactive Otsu thresholder.
   - `-mode rect` for a rectangular ROI.
 
-`python ROI_GEN.py -fn  -mode
-  -fn, --file_name
-  -m , --mode`
+`python ROI_GEN.py -fn [file name] -mode [mode choice]`
