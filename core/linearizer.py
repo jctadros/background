@@ -39,7 +39,7 @@ class Interpol(object):
         self.inputImage = inputImage
         self.mask = np.copy(np.uint8(mask))
         self.updatedMask = np.copy(self.mask)
-        self.workImage = np.copy(np.uint8(np.round(((2**8 - 1)*(inputImage-np.nanmin(inputImage)))/(np.nanmax(inputImage)-np.nanmin(inputImage)))))
+        self.workImage = np.copy(np.uint16(np.round(((2**16 - 1)*(inputImage-np.nanmin(inputImage)))/(np.nanmax(inputImage)-np.nanmin(inputImage)))))
         self.result = np.ndarray(shape=inputImage.shape, dtype=inputImage.dtype)
         self.halfPatchWidth = halfPatchWidth
         self.passImage = np.copy(self.inputImage)
@@ -96,8 +96,8 @@ class Interpol(object):
                     self.gradientX[y, x] = 0
                     self.gradientY[y, x] = 0
 
-        self.gradientX /= 2**8-1
-        self.gradientY /= 2**8-1
+        self.gradientX /= 2**16-1
+        self.gradientY /= 2**16-1
 
     def computeFillFront(self):
         boundryMat = cv2.filter2D(self.targetRegion, cv2.CV_32F, self.LAPLACIAN_KERNEL)
@@ -150,7 +150,7 @@ class Interpol(object):
                     c+=1
 
             val_f = np.nanmean(s)
-            val_8 = np.uint8(np.round(((2**8 - 1)*(val_f - np.nanmin(self.inputImage)))/(np.nanmax(self.inputImage)-np.nanmin(self.inputImage))))
+            val_8 = np.uint16(np.round(((2**16 - 1)*(val_f - np.nanmin(self.inputImage)))/(np.nanmax(self.inputImage)-np.nanmin(self.inputImage))))
             self.workImage[dict[5][0], dict[5][1]] = val_8
             self.passImage[dict[5][0], dict[5][1]] = val_f
             self.sourceRegion[dict[5][0], dict[5][1]] = 1
