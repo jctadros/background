@@ -2,6 +2,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
 ![Comparision](/images/out.jpg)
 <img align='right' src="images/ROI_GEN.gif" width="276" height="276">
+
 <img align='right' src="images/ROI_GEN_2.gif" width="276" height="276">
 
 ##### Usage
