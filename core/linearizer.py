@@ -59,7 +59,6 @@ class Interpol(object):
             end  = time.time()
             cv2.imwrite(output_path+'/updatedMask/updatedMask_%.2d.png'%k, self.updatedMask)
             cv2.imwrite(output_path+'/iterations/inpaintedImage_%.2d.png'%k, self.workImage)
-            
             print 'Iteration '+str(k)+' -- '+str(np.round(end-start,2))+' sec'
 
         self.result = np.copy(self.workImage)
