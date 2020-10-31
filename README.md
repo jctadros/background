@@ -1,4 +1,4 @@
-This is a thresholding+inpainting toolkit for astronomic photometric images. The different scripts allow for the identification of ROI in photometric images using an Otsu thresholding and different interpolation schemes for the filling of the masked ROI based on bilinear interpolation and patch-based inpainting techniques based on Criminisi et. al (2005) https://www.irisa.fr/vista/Papers/2004_ip_criminisi.pdf 
+This is a thresholding+inpainting toolkit for astronomic photometric images. The different scripts allow for the identification of ROI in photometric images using an Otsu thresholding and different interpolation schemes for the filling of the masked ROI based on bilinear interpolation and patch-based inpainting techniques.
 
 ![Comparision](/images/out.jpg)
 
@@ -27,4 +27,18 @@ N.B: run with otsu mode before rect mode as the rectangular mask will be centere
 <p float='center'>
   <img src="/images/Crab_int.gif" width="276" height="276">
   <img src="/images/eye_int.gif" width="276" height="276">
+</p>
+
+3. `inpaint.py` is a patch-based image inpainting interpolation scheme. For the details of the algorithm check https://www.irisa.fr/vista/Papers/2004_ip_criminisi.pdf. The image to interpolate needs to be indentified using the `-fn`, `-mode`m and `-v` arguments, the algorithm settings need to be set using the `-hpw` and `-select` arguments:
+  - `-fn` file name
+  - `-mode` otsu or rect
+  - `-v` version of the image
+  - `-hpw` half-patch width (default set to 4)
+  - `-select` 1 or 0 
+
+`inpaint.py` will also create different directories and store the image and mask as well as the position of the taret patch at each iteration for future use.
+
+<p float='center'>
+  <img src="/images/Crab_inp.gif" width="276" height="276">
+  <img src="/images/eye_inp.gif" width="276" height="276">
 </p>
