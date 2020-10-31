@@ -142,7 +142,7 @@ elif mode == 'otsu':
 
     zoom = info[int(np.min(y)): int(np.max(y)), int(np.min(x)): int(np.max(x))]
     image, mask, x_contour, y_contour = interactive_otsu_thresholding(info, zoom, int(np.min(x)), int(np.min(y)), file_name, directory_1)
-    im_zoom = image[int(np.min(y)): int(np.max(y)), int(np.min(x)): int(np.max(x))]
+    im_zoom = image[int(np.min(y)):int(np.max(y)), int(np.min(x)):int(np.max(x))]
 
     for idx, pic in enumerate([image, mask]):
         fig = plt.figure()
