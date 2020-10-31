@@ -21,7 +21,8 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 2. `interpolate.py` is a basic linear interpolation scheme. At each pixel the background is linearly interpolated in the four main directions based on the mean of its four neighboring pixels. The background is interpolated from the boundary inwards in an onion-layer way. The image to interpolate needs to be identified using the `-fn`, `-mode`, and `-v` arguments:
   - `-fn` file name
   - `-mode` otsu or rect
-  - `-v` version of the image 
+  - `-v` version of the image
+
 `interpolate.py` will also create different directories and store the image and mask as well as the position of the target patch at each iteration for future use or analysis.  
 
 <img align='right' src='images/eye_int.gif' width='276' height='276'>
