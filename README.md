@@ -19,7 +19,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
 
 
-<img align='right' src='images/crab_int.gif' width='276' height='276'>
+<img align='right' src='images/Crab_int.gif' width='276' height='276'>
 
 
 
