@@ -25,4 +25,4 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
 <img align='right' src='images/eye_int.gif' width='276' height='276'>
 
-`interpolate.py` will also create different directories and store the image and mask as well as the position of the target patch at each iteration for future use or analysis.
+`interpolate.py` will also create different directories and store the image and mask as well as the position of the target patch at each iteration for future use or analysis. The version of the image masking the source is `0` by default, other versions are designated for the masking of other parts of the image using the `ROI_SYN.py` script. 
