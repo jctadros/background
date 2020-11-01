@@ -42,3 +42,11 @@ N.B: run with otsu mode before rect mode as the rectangular mask will be centere
   <img src="/images/Crab_inp.gif" width="276" height="276">
   <img src="/images/eye_inp.gif" width="276" height="276">
 </p>
+
+4. `ROI_SYN.py` is an ROI synthesizer which takes the otsu/rect ROI and create a similar mask in a different part of the image. The new position of the mask is chosen interactively using the mouse. This would create a repository with version numbering `v` which can then be linearily interpolated or inpainted using the scripts. The image is identified using the `-fn` and `-mode` arguments. 
+
+<p float='center'>
+  <img src = "/images/crab_syn.gif" width="276" height="276">
+  <img src = "/images/eye_syn.gif" width="276" height="276">
+</p>
+
