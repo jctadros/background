@@ -47,6 +47,5 @@ N.B: run with otsu mode before rect mode as the rectangular mask will be centere
 
 <p float='center'>
   <img src = "/images/crab_syn.gif" width="276" height="276">
-  <img src = "/images/eye_syn.gif" width="276" height="276">
 </p>
 
