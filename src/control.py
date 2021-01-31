@@ -109,7 +109,7 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1):
         image_1.set_data(zoom)
         plt.draw()
     
-    xsize, ysize, row_i, col_i = len(zoom), len(zoom.T), np.min(corner_coord[0]), np.min(corner_coord[1])
+    xsize, ysize, row_i, col_i = len(zoom), len(zoom.T), int(np.min(corner_coord[0])), int(np.min(corner_coord[1]))
   
     hist, bin_centers = better_histogram(zoom, False, None, directory_1)
     best_thres = Otsu_method(hist, bin_centers)
@@ -121,7 +121,6 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1):
     image_1  = plt.imshow(zoom)
     image_2, = plt.plot(x_contour, y_contour, 'r', alpha=0.4, label='Region of Interest')
     plt.legend(loc='lower right')
-    #cb = plt.colorbar()
     f.canvas.mpl_connect("key_press_event", on_key)
     plt.show()
 
@@ -130,7 +129,6 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1):
     del _, __
 
     pix_x = pix[0] + col_i
-    exit()
     pix_y = pix[1] + row_i
     masked_image = info.copy()
     mask = np.zeros((info.shape[0], info.shape[1]))
@@ -184,6 +182,6 @@ def interactive_ROI(info):
     plt.show()
       
   zoom = info[int(np.min(y)): int(np.max(y)), int(np.min(x)): int(np.max(x))]
-  corner_coord = (int(np.min(x)), int(np.min(y)))
+  corner_coord = (x,y)
   
   return corner_coord, zoom
