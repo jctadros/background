@@ -1,14 +1,16 @@
 import numpy as np
-import os, sys, argparse
-import astropy.io.fits as fits
+import os, sys, argparse, warnings
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
-from control import interactive_otsu_thresholding
-from astropy import wcs
-from matplotlib import ticker, cm
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LogNorm
 from matplotlib.ticker import MultipleLocator
+from matplotlib import ticker, cm
+
+from astropy import wcs
+import astropy.io.fits as fits
+from control import interactive_ROI, interactive_Otsu
+
+warnings.filterwarnings("ignore")
 
 image_path   = '/Users/jeantad/Desktop/new_crab/DATA_TEST/'
 output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
@@ -19,7 +21,6 @@ arg_parser.add_argument("-mode", "--mode", required=True, help=" rectangular or 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 mode = args['mode']
-pass_accept  = True
 
 directory_1 = output_path + str(file_name) + '/Otsu'
 directory_2 = output_path + str(file_name) + '/analysis/otsu/ROI_0'
@@ -90,58 +91,23 @@ if mode == 'rect':
 elif mode == 'otsu':
     try:
         path   = image_path + file_name + '.fits'
+        #TODO: Make sure the image is always in [1] and header is in [0]
         info   = fits.open(path)[1].data
         header = fits.open(path)[0].header
+
+        for dir in [directory_1, directory_2]:
+          #to not override the files each time, we only create them once
+          if not os.path.exists(dir):
+            os.makedirs(dir)
 
     except IOError:
         print ('Error: File not found in directory.')
         exit(1)
-
-    for dir in [directory_1, directory_2]:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-
-    def on_key(event):
-        global pass_accept
-        if event.key == 'enter':
-            pass_accept = False
-            np.save(output_path+str(file_name)+'/Otsu/roi.npy', info[int(min(y)):int(max(y)), int(min(x)):int(max(x))])
-            plt.close('all')
-        elif event.key == 'backspace':
-            pass_accept = True
-            plt.close('all')
-
-    def onselect(eclick, erelease):
-        if eclick.ydata > erelease.ydata:
-            eclick.ydata, erelease.ydata = erelease.ydata, eclick.ydata
-        if eclick.xdata > erelease.xdata:
-            eclick.xdata, erelease.xdata = erelease.xdata, eclick.xdata
-        x[:] = eclick.xdata, erelease.xdata
-        y[:] = erelease.ydata, erelease.ydata - erelease.xdata + eclick.xdata
-        ax.set_xlim(min(x), max(x))
-        ax.set_ylim(max(y), min(y))
-        ax.axis('off')
-        ax.set_yticklabels([])
-        ax.set_xticklabels([])
-        fig.canvas.mpl_connect("key_press_event", on_key)
-
-    while pass_accept:
-        fig = plt.figure()
-        ax  = fig.add_subplot(111)
-        x, y = [], []
-        rs = widgets.RectangleSelector(
-                     ax, onselect, drawtype='box',
-                     rectprops = dict(facecolor='red',
-                     edgecolor='black', alpha=0.2, fill=True))
-
-        ax.axis('off')
-        ax.set_yticklabels([])
-        ax.set_xticklabels([])
-        plt.imshow(info)
-        plt.show()
-
-    zoom = info[int(np.min(y)): int(np.max(y)), int(np.min(x)): int(np.max(x))]
-    image, mask, x_contour, y_contour = interactive_otsu_thresholding(info, zoom, int(np.min(x)), int(np.min(y)), file_name, directory_1)
+    
+    corner_coord, zoom = interactive_ROI(info)
+    np.save(output_path+str(file_name)+'/Otsu/roi.npy', zoom)
+    
+    image, mask, x_contour, y_contour = interactive_Otsu(info, zoom, corner_coord, file_name, directory_1)
     im_zoom = image[int(np.min(y)):int(np.max(y)), int(np.min(x)):int(np.max(x))]
 
     for idx, pic in enumerate([image, mask]):
