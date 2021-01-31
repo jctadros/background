@@ -1,10 +1,9 @@
-import mahotas
-import warnings
 import numpy as np
 import skimage.morphology as morph
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
-from scipy.ndimage.filters import generic_filter
+import mahotas
+import warnings
 
 warnings.filterwarnings("ignore")
 thres, count, size_morph = 0, 0, 0
@@ -86,7 +85,7 @@ def build_contour(zoom, thres, size_morph, xsize, ysize):
 
     return segs[:,0], segs[:,1], pix
 
-def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1):
+def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1, directory_2):
     global best_thres, xsize, ysize
     def on_key(event):
         global thres, size_morph, p
@@ -135,10 +134,33 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1):
     for elem in range(len(pix_x)):
         masked_image[pix_x[elem]][pix_y[elem]] = np.nan
         mask[pix_x[elem]][pix_y[elem]]  = 255
+    
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    ax.axis('off')
+    plt.imshow(masked_image)
+    plt.savefig(directory_1+'/masked_image.png')
+    plt.savefig(directory_2+'/masked_image.png')
+    plt.close('all')
+  
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    ax.axis('off')
+    plt.imshow(mask)
+    plt.savefig(directory_1+'/mask_image.png')
+    plt.savefig(directory_2+'/mask_image.png')
+    plt.close('all')
+    
+    np.save(directory_1+'/contour_coord.npy', [x_contour, y_contour])
+    np.save(directory_2+'/contour_coord.npy', [x_contour,y_contour])
+    np.save(directory_1+'/masked_data.npy', masked_image)
+    np.save(directory_2+'/masked_data.npy', masked_image)
+    np.save(directory_1+'/mask_data.npy', mask)
+    np.save(directory_2+'/mask_data.npy', mask)
+    
+    return None
 
-    return masked_image, mask, x_contour, y_contour
-
-def interactive_ROI(info):  
+def interactive_ROI(info, directory_1):  
   def on_key(event):
     global pass_accept
     if event.key == 'enter':
@@ -184,4 +206,8 @@ def interactive_ROI(info):
   zoom = info[int(np.min(y)): int(np.max(y)), int(np.min(x)): int(np.max(x))]
   corner_coord = (x,y)
   
-  return corner_coord, zoom
+  np.save(directory_1+'/zoom_coord.npy', [corner_coord[0], corner_coord[1]])
+  np.save(directory_1+'/zoom_data.npy', zoom)
+  
+  return zoom, corner_coord
+
