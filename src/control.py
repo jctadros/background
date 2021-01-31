@@ -13,16 +13,16 @@ pass_accept = True
 def better_histogram(zoom, plot_switch, best_thres, directory_1, nbins=255):
     #flatten zoom and remove 'NaN' 
     array = [pix for pix in zoom.reshape((-1,1)) if pix != 'nan']
-  
     hist, bin_edges = np.histogram(array, nbins)
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.
     
+    #TODO: very slow when TRUE
     if plot_switch:
         plt.hist(array, bins=nbins)
         plt.axvline(x=best_thres, color='red')
         plt.savefig(directory_1+'/HIST.png')
         plt.close()
-
+    
     return hist, bin_centers
 
 def Otsu_method(hist, bin_centers, nbins=255):
@@ -37,14 +37,6 @@ def Otsu_method(hist, bin_centers, nbins=255):
     best_thres = bin_centers[:-1][idx]
 
     return best_thres
-
-def plateau(x, y):
-    I_filt = generic_filter(y, np.std, size=5)
-    max = 0
-    for i in range(len(I_filt)):
-        if I_filt[i] > max:
-            max = x[i]
-    return max + 5/2
 
 def build_contour(zoom, thres, size_morph, xsize, ysize):
     #------------------------------------ DISCLAIMER -------------------------------
@@ -129,25 +121,24 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1):
     image_1  = plt.imshow(zoom)
     image_2, = plt.plot(x_contour, y_contour, 'r', alpha=0.4, label='Region of Interest')
     plt.legend(loc='lower right')
-    cb = plt.colorbar()
+    #cb = plt.colorbar()
     f.canvas.mpl_connect("key_press_event", on_key)
     plt.show()
 
     x_contour, y_contour, pix = build_contour(zoom, best_thres*(1-thres), size_morph, xsize, ysize)
-    _, __ = better_histogram(zoom, True, best_thres*(1-thres), directory_1)
+    _, __ = better_histogram(zoom, False, best_thres*(1-thres), directory_1)
     del _, __
 
     pix_x = pix[0] + col_i
+    exit()
     pix_y = pix[1] + row_i
-    image = info.copy()
-    mask  = np.zeros((info.shape[0], info.shape[1]))
-    pix_vals = {}
-    for l in range(len(pix_x)):
-        pix_vals[(pix_x[l], pix_y[l])] = image[pix_x[l]][pix_y[l]]
-        image[pix_x[l]][pix_y[l]] = np.nan
-        mask[pix_x[l]][pix_y[l]]  = 255
+    masked_image = info.copy()
+    mask = np.zeros((info.shape[0], info.shape[1]))
+    for elem in range(len(pix_x)):
+        masked_image[pix_x[elem]][pix_y[elem]] = np.nan
+        mask[pix_x[elem]][pix_y[elem]]  = 255
 
-    return image, mask, x_contour, y_contour
+    return masked_image, mask, x_contour, y_contour
 
 def interactive_ROI(info):  
   def on_key(event):
@@ -193,6 +184,6 @@ def interactive_ROI(info):
     plt.show()
       
   zoom = info[int(np.min(y)): int(np.max(y)), int(np.min(x)): int(np.max(x))]
-  corner_coord = (x,y)
-
+  corner_coord = (int(np.min(x)), int(np.min(y)))
+  
   return corner_coord, zoom
