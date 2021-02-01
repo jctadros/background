@@ -26,7 +26,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
   - `-fn` file name
   - `-v` version of the image
   - `-hpw` half-patch width (default set to 4)
-  - `-select` 1 or 0  (defauly set to 0)
+  - `-select` 1 or 0  (default set to 0)
 
 `inpaint.py` will also create different directories and store the image and mask as well as the position of the taret patch at each iteration for future use.
 
