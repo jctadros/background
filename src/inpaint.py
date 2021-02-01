@@ -123,6 +123,7 @@ sh = 100
 if version == 0:
   co = np.load(coord_path)
   xc , yc = co[0], co[1]
+  #TODO: problem here !
   [x, y] = np.load(zoom)
   xm, ym = np.mean(xc), np.mean(yc)
   center_x = int(np.mean(xc-xm+float(x[0]+x[1])/2))
