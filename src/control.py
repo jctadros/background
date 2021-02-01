@@ -147,16 +147,16 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1, directory
     ax  = fig.add_subplot(111)
     ax.axis('off')
     plt.imshow(mask)
-    plt.savefig(directory_1+'/mask_image.png')
-    plt.savefig(directory_2+'/mask_image.png')
+    plt.savefig(directory_1+'/mask.png')
+    plt.savefig(directory_2+'/mask.png')
     plt.close('all')
     
     np.save(directory_1+'/contour_coord.npy', [x_contour, y_contour])
     np.save(directory_2+'/contour_coord.npy', [x_contour,y_contour])
     np.save(directory_1+'/masked_image.npy', masked_image)
     np.save(directory_2+'/masked_image.npy', masked_image)
-    np.save(directory_1+'/mask_image.npy', mask)
-    np.save(directory_2+'/mask_image.npy', mask)
+    np.save(directory_1+'/mask.npy', mask)
+    np.save(directory_2+'/mask.npy', mask)
     
     return None
 
