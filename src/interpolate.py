@@ -20,7 +20,7 @@ directory_3 = directory_2 + '/iterations'
 directory_4 = directory_2 + '/updatedMask'
 
 image_path  = directory_1 + '/masked_image.npy'
-mask_path   = directory_1 +'/mask_image.npy'
+mask_path   = directory_1 +'/mask.npy'
 coord_path  = directory_1 +'/contour_coord.npy'
 
 for dir in [directory_3, directory_4]:
