@@ -5,17 +5,7 @@ import math
 import time
 import pickle
 
-class inpainter(object):
-    DEFAULT_HALF_PATCH_WIDTH=4
-    MODE_ADDITION=0
-    MODE_MULTIPLICATION=1
-
-    ERROR_INPUT_MAT_INVALID_TYPE=0
-    ERROR_INPUT_MASK_INVALID_TYPE=1
-    ERROR_MASK_INPUT_SIZE_MISMATCH=2
-    ERROR_HALF_PATCH_WIDTH_ZERO=3
-    CHECK_VALID=4
-
+class Inpainter(object):
     inputImage = None
     mask = updatedMask = None
     result = None
@@ -28,12 +18,9 @@ class inpainter(object):
     confidence = None
     data = None
     LAPLACIAN_KERNEL = NORMAL_KERNELX = NORMAL_KERNELY = None
-    #cv::Point2i
     bestMatchUpperLeft = bestMatchLowerRight = None
     patchHeight = patchWidth = 0
-    #std::vector<cv::Point> -> list[(y,x)]
     fillFront = []
-    #std::vector<cv::Point2f>
     normals = []
     sourcePatchULList = []
     targetPatchSList = []
@@ -57,18 +44,7 @@ class inpainter(object):
         self.result = np.ndarray(shape=inputImage.shape, dtype=inputImage.dtype)
         self.halfPatchWidth = halfPatchWidth
 
-    def checkValidInputs(self):
-        if not self.inputImage.dtype == np.uint8: # CV_8UC3
-            return self.ERROR_INPUT_MAT_INVALID_TYPE
-        if not self.mask.dtype == np.uint8: # CV_8UC1
-            return self.ERROR_INPUT_MASK_INVALID_TYPE
-        if not self.mask.shape == self.inputImage.shape[:2]: # CV_ARE_SIZES_EQ
-            return self.ERROR_MASK_INPUT_SIZE_MISMATCH
-        if self.halfPatchWidth == 0:
-            return self.ERROR_HALF_PATCH_WIDTH_ZERO
-        return self.CHECK_VALID
-
-    def inpaint(self, file_name, output_path, yl, xr):
+    def inpaint(self, file_name, directory_2, yl, xr):
         self.initializeMats()
         self.calculateGradients()
         stay = True
@@ -85,20 +61,20 @@ class inpainter(object):
             PositionTrack_image, PositionTrack_dict = self.updateMats(PositionTrack_dict, yl, xr)
             stay = self.checkEnd()
             end = time.time()
-            cv2.imwrite(output_path+'/updatedMask/updatedMask_%.2d.png'%k, self.updatedMask)
+            cv2.imwrite(directory_2+'/updatedMask/updatedMask_%.2d.png'%k, self.updatedMask)
             if self.select == 1:
-                cv2.imwrite(output_path+'/iterations/inpaintedImage_%.2d.png'%k, self.nonCrop)
+                cv2.imwrite(directory_2+'/iterations/inpaintedImage_%.2d.png'%k, self.nonCrop)
             elif self.select == 0:
-                cv2.imwrite(output_path+'/iterations/inpaintedImage_%.2d.png'%k, self.workImage)
-            cv2.imwrite(output_path+'/positionTrack/positionTrack_%.2d.png'%k, PositionTrack_image)
+                cv2.imwrite(directory_2+'/iterations/inpaintedImage_%.2d.png'%k, self.workImage)
+            cv2.imwrite(directory_2+'/positionTrack/positionTrack_%.2d.png'%k, PositionTrack_image)
             print 'Iteration '+str(k)+' -- '+str(np.round(end-start,2))+' sec'+' '+str(self.halfPatchWidth)
         if self.select == 1:
             self.result = np.copy(self.nonCrop)
         else:
             self.result = np.copy(self.workImage)
-        file_path = output_path+'/positionTrack'
+        file_path = directory_2+'/positionTrack'
         name = 'PositionTrack_dict.pkl'
-        #pickle.dump(PositionTrack_dict, open(file_path+'/'+name, 'wb'), pickle.HIGHEST_PROTOCOL)
+        pickle.dump(PositionTrack_dict, open(file_path+'/'+name, 'wb'), pickle.HIGHEST_PROTOCOL)
 
     def initializeMats(self):
         _, self.confidence = cv2.threshold(self.mask, 10, 255, cv2.THRESH_BINARY)
