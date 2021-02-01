@@ -153,10 +153,10 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1, directory
     
     np.save(directory_1+'/contour_coord.npy', [x_contour, y_contour])
     np.save(directory_2+'/contour_coord.npy', [x_contour,y_contour])
-    np.save(directory_1+'/masked_data.npy', masked_image)
-    np.save(directory_2+'/masked_data.npy', masked_image)
-    np.save(directory_1+'/mask_data.npy', mask)
-    np.save(directory_2+'/mask_data.npy', mask)
+    np.save(directory_1+'/masked_image.npy', masked_image)
+    np.save(directory_2+'/masked_image.npy', masked_image)
+    np.save(directory_1+'/mask_image.npy', mask)
+    np.save(directory_2+'/mask_image.npy', mask)
     
     return None
 
@@ -207,7 +207,7 @@ def interactive_ROI(info, directory_1):
   corner_coord = (x,y)
   
   np.save(directory_1+'/zoom_coord.npy', [corner_coord[0], corner_coord[1]])
-  np.save(directory_1+'/zoom_data.npy', zoom)
+  np.save(directory_1+'/zoom.npy', zoom)
   
   return zoom, corner_coord
 
