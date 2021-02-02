@@ -120,29 +120,24 @@ ax  = f.add_subplot(111)
 ax.axis('off')
 sh = 100
 
-if version == 0:
-  co = np.load(coord_path)
-  xc , yc = co[0], co[1]
-  #TODO: problem here !
-  [x, y] = np.load(zoom)
-  xm, ym = np.mean(xc), np.mean(yc)
-  center_x = int(np.mean(xc-xm+float(x[0]+x[1])/2))
-  center_y = int(np.mean(yc-ym+float(y[0]+y[1])/2))
-
-  zoom_float = float_result[center_y-sh:center_y+sh+1, center_x-sh:center_x+sh+1]
-  mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
-  for x in range(zoom_float.shape[0]):
-    for y in range(zoom_float.shape[1]):
-      if np.absolute(zoom_float[x][y]-mu) >= 5*std:
-        zoom_float[x][y] = np.nan
+if version==0:
+ co = np.load(coord_path)
+ xc , yc = co[0], co[1]
+ [x, y] = [[0,float_result.shape[0]], [float_result.shape[1], 0]]
+ xm, ym = np.mean(xc), np.mean(yc)
+ center_x = int(np.mean(xc-xm+float(x[0]+x[1])/2))
+ center_y = int(np.mean(yc-ym+float(y[0]+y[1])/2))
+ 
+ zoom_float = float_result[center_x-sh:center_x+sh+1, center_y-sh:center_y+sh+1]
 
 else:
   zoom_float = float_result[cy-sh:cy+sh, cx-sh:cx+sh]
-  mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
-  for x in range(zoom_float.shape[0]):
-    for y in range(zoom_float.shape[1]):
-      if np.absolute(zoom_float[x][y]-mu) >= 3*std:
-        zoom_float[x][y] = np.nan
+
+mu, std = np.nanmedian(zoom_float), np.nanstd(zoom_float)
+for x in range(zoom_float.shape[0]):
+  for y in range(zoom_float.shape[1]):
+    if np.absolute(zoom_float[x][y]-mu) >= 3*std:
+      zoom_float[x][y] = np.nan
 
 plt.imshow(zoom_float, cmap=cm.seismic)
 plt.savefig(directory_2 + '/inpainted_image.png')
