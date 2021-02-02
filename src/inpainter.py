@@ -25,7 +25,6 @@ class Inpainter(object):
     sourcePatchULList = []
     targetPatchSList = []
     targetPatchTList = []
-    mode = None
     halfPatchWidth = None
     targetIndex = None
 
@@ -190,7 +189,6 @@ class Inpainter(object):
             convolvedMat = cv2.filter2D(self.originalSourceRegion, cv2.CV_16U, SUM_KERNEL, anchor = (0, 0))
             self.sourcePatchULList = []
 
-            # sourcePatchULList: list whose elements is possible to be the UpperLeft of an patch to reference.
             for y in range(height - pHeight):
                 for x in range(width - pWidth):
                     if convolvedMat[y, x] == area:
@@ -200,7 +198,6 @@ class Inpainter(object):
         self.targetPatchSList = []
         self.targetPatchTList = []
 
-        # targetPatchSList & targetPatchTList: list whose elements are the coordinates of  origin/toInpaint pixels.
         for i in range(pHeight):
             for j in range(pWidth):
                 if self.sourceRegion[aY+i, aX+j] == 1:
@@ -220,7 +217,6 @@ class Inpainter(object):
                         targetPixel = workImage[aY+i][aX+j]
 
                         difference = float(sourcePixel) - float(targetPixel)
-                        #patchError += np.absolute(difference)
                         patchError += math.pow(difference, 2)
                         mean += sourcePixel
 
@@ -235,12 +231,8 @@ class Inpainter(object):
                     for (i, j) in self.targetPatchTList:
                                 sourcePixel = workImage[y+i][x+j]
                                 difference = sourcePixel - mean
-                                #patchVariance += np.absolute(difference)
                                 patchVariance += math.pow(difference, 2)
 
-                    # Use alpha & Beta to encourage path with less patch variance.
-                    # For situations in which you need little variance.
-                    # Alpha = Beta = 1 to disable.
                     if patchError < alpha * minError or patchVariance < beta * bestPatchVariance:
                         bestPatchVariance = patchVariance
                         minError = patchError
