@@ -18,7 +18,8 @@ version = args['version']
 select = args['select']
 halfPatchWidth = args['half_patch_width']
 
-output_path = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
+os.chdir("..")
+output_path = os.path.abspath(os.curdir) + '/images/'
 directory_1 = output_path + file_name + '/ROI_' + str(version)
 directory_2 = directory_1 + '/inpainting'
 directory_3 = directory_2 + '/iterations'

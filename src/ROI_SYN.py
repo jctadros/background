@@ -8,7 +8,9 @@ arg_parser.add_argument("-fn", "--file_name", required=True, help="  file name w
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 
-output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
+os.chdir("..")
+output_path = os.path.abspath(os.curdir) + '/images/'
+
 directory_1  = output_path + file_name 
 directory_2  = output_path + file_name + '/ROI_0'
 

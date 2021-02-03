@@ -11,8 +11,10 @@ arg_parser.add_argument("-fn", "--file_name", required=True, help=" include fits
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
 
-image_path   = '/Users/jeantad/Desktop/new_crab/DATA_TEST/'
-output_path  = '/Users/jeantad/Desktop/new_crab/OUT_TEST/'
+os.chdir("..")
+image_path = os.path.abspath(os.curdir) + '/images/'
+output_path = image_path
+
 directory_1 = output_path + file_name
 directory_2 = directory_1 + '/ROI_0'
 
