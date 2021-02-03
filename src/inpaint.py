@@ -8,13 +8,13 @@ from inpainter import Inpainter
 
 arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
-arg_parser.add_argument('-v', '--version', required=True, type=int, help=' file name without extension')
+arg_parser.add_argument('-roi', '--roi', required=True, type=int, help=' file name without extension')
 arg_parser.add_argument('-hpw','--half_patch_width', required=False, type=int, default=4,  help= 'half patch width')
 arg_parser.add_argument('-select', '--select', required=False, type=bool, default=True,  help='select source region')
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
-version = args['version']
+version = args['roi']
 select = args['select']
 halfPatchWidth = args['half_patch_width']
 
