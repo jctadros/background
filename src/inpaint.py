@@ -1,10 +1,10 @@
-import os, sys, argparse, math
-import numpy as np
+import os, argparse, math, time
 import matplotlib.pyplot as plt
-from inpainter import Inpainter
 import matplotlib.widgets as widgets
-from matplotlib import ticker, cm
-import time
+from matplotlib import cm
+import numpy as np
+
+from inpainter import Inpainter
 
 arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
