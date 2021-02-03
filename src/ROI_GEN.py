@@ -1,7 +1,7 @@
 import numpy as np
 import os, argparse, warnings
 import matplotlib.pyplot as plt
-import astropy.io.fits as fits
+
 from control import interactive_ROI, interactive_Otsu
 
 warnings.filterwarnings("ignore")
