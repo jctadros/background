@@ -3,7 +3,15 @@ import cv2
 import time, math
 import matplotlib.pyplot as plt
 
-class Interpolator(object):
+class Interpol(object):
+    DEFAULT_HALF_PATCH_WIDTH=4
+    MODE_ADDITION=0
+    MODE_MULTIPLICATION=1
+    ERROR_INPUT_MAT_INVALID_TYPE=0
+    ERROR_INPUT_MASK_INVALID_TYPE=1
+    ERROR_MASK_INPUT_SIZE_MISMATCH=2
+    ERROR_HALF_PATCH_WIDTH_ZERO=3
+    CHECK_VALID=4
     inputImage = None
     mask = updatedMask = None
     result = None
@@ -36,7 +44,7 @@ class Interpolator(object):
         self.halfPatchWidth = halfPatchWidth
         self.passImage = np.copy(self.inputImage)
 
-    def linear_interpolator(self, file_name, directory_2):
+    def Linear(self, file_name, output_path):
         global k
         self.initializeMats()
         self.calculateGradients()
@@ -49,8 +57,8 @@ class Interpolator(object):
             self.interpol()
             stay = self.checkEnd()
             end  = time.time()
-            cv2.imwrite(directory_2+'/updatedMask/updatedMask_%.2d.png'%k, self.updatedMask)
-            cv2.imwrite(directory_2+'/iterations/inpaintedImage_%.2d.png'%k, self.workImage)
+            cv2.imwrite(output_path+'/updatedMask/updatedMask_%.2d.png'%k, self.updatedMask)
+            cv2.imwrite(output_path+'/iterations/inpaintedImage_%.2d.png'%k, self.workImage)
             print 'Iteration '+str(k)+' -- '+str(np.round(end-start,2))+' sec'
 
         self.result = np.copy(self.workImage)
