@@ -66,22 +66,27 @@ def build_contour(zoom, thres, size_morph, xsize, ysize):
     for i in range(len(segs[0])):
         temp = len(segs[0][i])
         index.append(temp)
+    try:
+      best = np.argmax(index)
+      segs = segs[0][best]
 
-    best = np.argmax(index)
-    segs = segs[0][best]
-    poly_verts = []
-    for i in range(len(segs[:,0])):
+      poly_verts = []
+      for i in range(len(segs[:,0])):
         val = (segs[:,0][i], segs[:,1][i])
         poly_verts.append(val)
 
-    n_grid = np.zeros((xsize, ysize), dtype=np.int8)
-    poly = []
-    for i in range(len(segs[:,0])):
+      n_grid = np.zeros((xsize, ysize), dtype=np.int8)
+      poly = []
+      for i in range(len(segs[:,0])):
         temp = int(segs[:,1][i]), int(segs[:,0][i])
         poly.append(temp)
 
-    mahotas.polygon.fill_polygon(poly, n_grid)
-    pix = np.where(n_grid == 1)
+      mahotas.polygon.fill_polygon(poly, n_grid)
+      pix = np.where(n_grid == 1)
+    
+    except ValueError:
+      print('Contour over/underflow use the apposite arrow to refine')
+      return None, None, None
 
     return segs[:,0], segs[:,1], pix
 
