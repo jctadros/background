@@ -14,20 +14,15 @@ file_name = args['file_name']
 os.chdir("..")
 image_path = os.path.abspath(os.curdir) + '/images/'
 output_path = image_path
-
 directory_1 = output_path + file_name
 directory_2 = directory_1 + '/ROI_0'
 
+if not os.path.exists(directory_2):
+  os.makedirs(directory_2)
+ 
 try:
-  #TODO: Include image in arguments
-  path   = image_path + file_name + '.fits'
-  #TODO: Make sure the image is always in [1] and header is in [0]
-  info   = fits.open(path)[1].data
-  header = fits.open(path)[0].header
-  #to not override the files each time, we only create them once
-  if not os.path.exists(directory_2):
-    os.makedirs(directory_2)
-  
+  path = image_path + file_name + '.npy'
+  info   = np.load(path)
 except IOError:
     print ('Error: File not found in directory.')
     exit(1)
