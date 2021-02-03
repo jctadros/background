@@ -2,7 +2,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
 ![Comparision](../assets/images/out.jpg?raw=true)
 
-##### Usage
+##### Documentation
 1. `ROI_GEN.py` is an interactive background thresholder used to identify the region of interest (ROI) in the image. This ROI will be masked for background interpolation. The file name is loaded through the `-fn` argument:
   - `-fn` file name
   `ROI_GEN.py` will create different directories and store the original image, ROI, mask, and masked image as well as .npy versions under an`RIO_0` directory for future use. The thresholding can be interactively manipulated through the `left-right` and `up-down` arrows to increment/decrement the ROI with small/large steps as well as through both `A` and `B` keys for smoothing/desmoothing. For more information on the Otsu thresholding mechanism checkout https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4310076
@@ -40,3 +40,6 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 <p float='center'>
   <img src = "../assets/images/crab_syn.gif?raw=true" width="276" height="276">
 </p>
+
+##### Contributions
+This work is built upon work done by Sarkis Kassounian <sarkis@camk.edu.pl>. More precisely, the Otsu thresholding routines found in the ROI_GEN.py scripts were written by Sarkis back in 2018. 
