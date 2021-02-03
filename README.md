@@ -32,7 +32,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
 
 <p float='center'>
   <img src="../assets/images/Crab_inp.gif?raw=true" width="276" height="276">
-  <img src="../assets/images/imageseye_inp.gif?raw=true" width="276" height="276">
+  <img src="../assets/images/eye_inp.gif?raw=true" width="276" height="276">
 </p>
 
 4. `ROI_SYN.py` is an ROI synthesizer which takes the Otsu-thresholded ROI and create a similar mask in a different part of the image. The new position of the mask is chosen interactively using the mouse. This would create a repository with roi version numbering `roi` which can then be linearily interpolated or inpainted using the scripts. The image is identified using the `-fn` arguments. 
