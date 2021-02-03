@@ -22,9 +22,9 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
   <img src="/testimages/eye_int.gif" width="276" height="276">
 </p>
 
-3. `inpaint.py` is a patch-based image inpainting interpolation scheme. For the details of the algorithm check https://www.irisa.fr/vista/Papers/2004_ip_criminisi.pdf. The file name, version, hpw, and selection option are loaded through the `-fn`, `-v`, `-hpw`, and `-select` arguments. If `-select 1` the user gets to choose the area of the image to pick patches from for the inpainting, if `-select 0` then the whole image is included. The select option is usually useful when the inpainting takes alot of time due to the image being big. 
+3. `inpaint.py` is a patch-based image inpainting interpolation scheme. For the details of the algorithm check https://www.irisa.fr/vista/Papers/2004_ip_criminisi.pdf. The file name, roi version, hpw, and selection option are loaded through the `-fn`, `-roi`, `-hpw`, and `-select` arguments. If `-select 1` the user gets to choose the area of the image to pick patches from for the inpainting, if `-select 0` then the whole image is included. The select option is usually useful when the inpainting takes alot of time due to the image being big. 
   - `-fn` file name
-  - `-v` version of the image
+  - `-roi` roi version of the image
   - `-hpw` half-patch width (default set to 4)
   - `-select` 1 or 0  (default set to 0)
 
@@ -35,7 +35,7 @@ This is a thresholding+inpainting toolkit for astronomic photometric images. The
   <img src="/testimages/eye_inp.gif" width="276" height="276">
 </p>
 
-4. `ROI_SYN.py` is an ROI synthesizer which takes the Otsu-thresholded ROI and create a similar mask in a different part of the image. The new position of the mask is chosen interactively using the mouse. This would create a repository with version numbering `v` which can then be linearily interpolated or inpainted using the scripts. The image is identified using the `-fn` arguments. 
+4. `ROI_SYN.py` is an ROI synthesizer which takes the Otsu-thresholded ROI and create a similar mask in a different part of the image. The new position of the mask is chosen interactively using the mouse. This would create a repository with roi version numbering `roi` which can then be linearily interpolated or inpainted using the scripts. The image is identified using the `-fn` arguments. 
 
 <p float='center'>
   <img src = "/testimages/crab_syn.gif" width="276" height="276">
