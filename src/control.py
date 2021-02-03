@@ -3,9 +3,7 @@ import skimage.morphology as morph
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
 import mahotas
-import warnings
 
-warnings.filterwarnings("ignore")
 thres, count, size_morph = 0, 0, 0
 pass_accept = True
 
@@ -118,6 +116,22 @@ def interactive_Otsu(info, zoom, corner_coord, file_name, directory_1, directory
     hist, bin_centers = better_histogram(zoom, False, None, directory_1)
     best_thres = Otsu_method(hist, bin_centers)
     x_contour, y_contour, pix = build_contour(zoom, best_thres*(1-thres), size_morph, xsize, ysize)
+    print('Adjust the contour using the arrows:')
+    print('------------------------------------')
+    print('UP:    +0.5')
+    print('DOWN:  -0.5')
+    print('RIGHT: +0.1')
+    print('LEFT:  -0.1')
+    print('CTRL+RIGHT: +0.01')
+    print('CTR+LEFTL:  -0.01')
+    print('CTR+SHIFT+RIGHT: +0.05')
+    print('CTR+SHIFT+LEFT:  -0.05')
+    print('')
+    print('Adjust smoothing:')
+    print('-----------------')
+    print('A: +1')
+    print('B: -1')
+    print('')
 
     f = plt.figure()
     ax = f.add_subplot(111)
@@ -185,18 +199,20 @@ def interactive_ROI(info, directory_1):
 
     x[:] = eclick.xdata, erelease.xdata
     y[:] = erelease.ydata, erelease.ydata - erelease.xdata + eclick.xdata
-
+    print('Press Enter to save or BACKSPACE to choose again')
     ax.set_xlim(min(x), max(x))
     ax.set_ylim(max(y), min(y))
     ax.axis('off')
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     fig.canvas.mpl_connect("key_press_event", on_key)
-
+  
+  print('')
+  print('----------------------- INTERACTIVE ROI -----------------------')
   while pass_accept:
     fig = plt.figure()
     ax  = fig.add_subplot(111)
-
+    print('Highlight the area of the ROI with the crusor')
     x, y = [], []
     rs = widgets.RectangleSelector(
                  ax, onselect, drawtype='box',
