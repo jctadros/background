@@ -52,6 +52,7 @@ if select:
             plt.close('all')
 
     def onselect(eclick, erelease):
+        
         global yr, yl, xl, xr
         if eclick.ydata > erelease.ydata:
             eclick.ydata, erelease.ydata = erelease.ydata, eclick.ydata
@@ -59,12 +60,14 @@ if select:
             eclick.xdata, erelease.xdata = erelease.xdata, eclick.xdata
         x[:] = eclick.xdata, erelease.xdata
         y[:] = eclick.ydata, erelease.ydata
+        print('Press Enter to save or BACKSPACE to choose again')
         xr, xl = ax.set_xlim(int(min(x)), int(max(x)))
         yr, yl = ax.set_ylim(int(max(y)), int(min(y)))
         fig.canvas.mpl_connect("key_press_event", on_key)
 
     pass_accept = True
     while pass_accept:
+        print('Highlight the area around the mask to inpaint from using the cursor. Make sure to include the entire mask in the hihlight.')
         fig = plt.figure()
         ax  = fig.add_subplot(111)
         x, y = [], []
