@@ -7,11 +7,11 @@ from linearizer import Interpolator
 
 arg_parser  = argparse.ArgumentParser()
 arg_parser.add_argument('-fn', '--file_name', required=True, help=' file name without extension')
-arg_parser.add_argument('-v', '--version', required=True, help=' version of ROI')
+arg_parser.add_argument('-roi', '--roi', required=True, help=' version of ROI')
 
 args = vars(arg_parser.parse_args())
 file_name = args['file_name']
-version = int(args['version'])
+version = int(args['roi'])
 
 os.chdir("..")
 output_path = os.path.abspath(os.curdir) + '/images/'
